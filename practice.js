@@ -2,32 +2,25 @@
 // Practice trials for Risk Survey Task
 
 function getPracticeTimeline(practiceCount) {
-    const baseTrials = [
-        {
-            trial_number: 'practice_1',
-            risk_probability: 75,
-            risk_reward: 200,
-            safe_reward: 150,
-            size_condition: 'both-large',
-            risk_on_left: true,
-            blue_probability: 25
-        },
-        {
-            trial_number: 'practice_2',
-            risk_probability: 50,
-            risk_reward: 150,
-            safe_reward: 100,
-            size_condition: 'both-small',
-            risk_on_left: false,
-            blue_probability: 50
-        }
-    ];
+    // Use the same trial generation logic as main_trials.js
+    function generateTrialCombinations() {
+        const combinations = [];
+        const riskProbs = [25, 50, 75];
+        const riskRewards = [100, 200, 300];
+        const safeRewards = [50, 100, 150];
 
-    const practiceTrials = [];
-    for (let i = 0; i < practiceCount; i++) {
-        const randomTrial = jsPsych.randomization.sampleWithReplacement(baseTrials, 1)[0];
-        const trialData = { ...randomTrial, trial_number: `practice_${i + 1}` };
-        practiceTrials.push(trialData);
+        for (let p of riskProbs) {
+            for (let rr of riskRewards) {
+                for (let sr of safeRewards) {
+                    combinations.push({
+                        riskProbability: p,
+                        riskReward: rr,
+                        safeReward: sr,
+                    });
+                }
+            }
+        }
+        return combinations;
     }
 
     function getSizeClass(sizeCondition, optionType) {
@@ -40,8 +33,28 @@ function getPracticeTimeline(practiceCount) {
         }
     }
 
+    // Generate all possible trial combinations
+    const combinations = generateTrialCombinations();
+    const sizeConditions = ['both-large', 'both-small', 'risk-large', 'safe-large'];
+    const shuffledCombinations = jsPsych.randomization.shuffle(combinations).slice(0, practiceCount);
+
+    // Create practice trials with random size and side
+    const practiceTrials = [];
+    for (let i = 0; i < shuffledCombinations.length; i++) {
+        const combo = shuffledCombinations[i];
+        practiceTrials.push({
+            trial_number: `practice_${i + 1}`,
+            risk_probability: combo.riskProbability,
+            risk_reward: combo.riskReward,
+            safe_reward: combo.safeReward,
+            size_condition: jsPsych.randomization.sampleWithoutReplacement(sizeConditions, 1)[0],
+            risk_on_left: Math.random() < 0.5
+        });
+    }
+
     function createTrialHTML(trial) {
         const riskBarHTML = `
+            <div style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">${trial.risk_reward}</div>
             <div class="risk-bar ${getSizeClass(trial.size_condition, 'risk')} selectable-bar" id="risk-bar" onclick="selectChoice('risk')">
                 <div class="risk-bar-red" style="height: ${trial.risk_probability}%;">
                     ${trial.risk_probability}%
@@ -49,14 +62,13 @@ function getPracticeTimeline(practiceCount) {
                 <div class="risk-bar-blue" style="height: ${100 - trial.risk_probability}%;">
                     ${100 - trial.risk_probability}%
                 </div>
-            </div>
-            <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">${trial.risk_reward}</div>`;
+            </div>`;
 
         const safeBarHTML = `
-            <div class="safe-bar ${getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="selectChoice('safe')">
+            <div style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">${trial.safe_reward}</div>
+            <div class="safe-bar ${getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="selectChoice('safe')" style="display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
                 100%
-            </div>
-            <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">${trial.safe_reward}</div>`;
+            </div>`;
 
         const leftOption = trial.risk_on_left ? riskBarHTML : safeBarHTML;
         const rightOption = trial.risk_on_left ? safeBarHTML : riskBarHTML;
@@ -68,8 +80,8 @@ function getPracticeTimeline(practiceCount) {
             </div>
             <div class="confidence-container">
                 <div class="confidence-label">On a scale of 0–100, how confident are you in your choice?</div>
-                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="50" oninput="updateConfidence(this.value)">
-                <div class="confidence-value" id="confidence-value">50</div>
+                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="0" oninput="updateConfidence(this.value)">
+                <div class="confidence-value" id="confidence-value">0</div>
             </div>
             <div class="navigation">
                 <button class="next-button" id="next-button" onclick="advanceTrial()" disabled>Next Trial</button>

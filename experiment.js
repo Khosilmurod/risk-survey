@@ -125,7 +125,6 @@ function runExperiment() {
                         To make your choice, click on the bar you would select; your selection will be highlighted. After choosing, use the slider to indicate how confident you are in your decision (0 = not at all confident, 100 = completely confident). Click the <strong>Next</strong> button to continue. <strong>There will be an 8-second time limit for each decision.</strong> Please consider each choice carefully and answer as honestly as possible. Your responses are important for our research.
                     </p>
                 </div>
-                <p class="instruction-footer">If you are ready, click <strong>Start</strong> to begin.</p>
             </div>`
         ],
         show_clickable_nav: true,

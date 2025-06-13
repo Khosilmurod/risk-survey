@@ -2,7 +2,7 @@
 
 // --- Global State ---
 window.currentChoice = null;
-window.currentConfidence = 50;
+window.currentConfidence = 0;
 window.trialStartTime = null;
 window.pageEntryTime = null;
 window.barChoiceTime = null;
@@ -39,11 +39,13 @@ window.updateConfidence = function(value) {
     window.checkTrialComplete();
 };
 
-// Enables the 'Next' button if a choice has been made
+// Enables the 'Next' button if a choice has been made AND confidence > 0
 window.checkTrialComplete = function() {
     const nextButton = document.getElementById('next-button');
-    if (nextButton && window.currentChoice !== null) {
+    if (nextButton && window.currentChoice !== null && window.currentConfidence > 0) {
         nextButton.disabled = false;
+    } else if (nextButton) {
+        nextButton.disabled = true;
     }
 };
 
@@ -57,18 +59,18 @@ window.advanceTrial = function() {
 // Resets the state for a new trial
 window.resetTrialState = function() {
     window.currentChoice = null;
-    window.currentConfidence = 50;
+    window.currentConfidence = 0;
     window.trialStartTime = Date.now();
     window.pageEntryTime = null;
     window.barChoiceTime = null;
     window.trialActive = true;
     const slider = document.getElementById('confidence-slider');
     if (slider) {
-        slider.value = 50;
+        slider.value = 0;
     }
     const confidenceValue = document.getElementById('confidence-value');
     if (confidenceValue) {
-        confidenceValue.textContent = '50';
+        confidenceValue.textContent = '0';
     }
     const nextButton = document.getElementById('next-button');
     if (nextButton) {

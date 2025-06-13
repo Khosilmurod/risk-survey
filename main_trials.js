@@ -57,6 +57,7 @@ function getMainTrialsTimeline(mainCount, trialDuration) {
 
     function createTrialHTML(trial) {
         const riskBarHTML = `
+            <div style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">${trial.risk_reward}</div>
             <div class="risk-bar ${getSizeClass(trial.size_condition, 'risk')} selectable-bar" id="risk-bar" onclick="selectChoice('risk')">
                 <div class="risk-bar-red" style="height: ${trial.risk_probability}%;">
                     ${trial.risk_probability}%
@@ -64,14 +65,13 @@ function getMainTrialsTimeline(mainCount, trialDuration) {
                 <div class="risk-bar-blue" style="height: ${100 - trial.risk_probability}%;">
                     ${100 - trial.risk_probability}%
                 </div>
-            </div>
-            <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">${trial.risk_reward}</div>`;
+            </div>`;
 
         const safeBarHTML = `
-            <div class="safe-bar ${getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="selectChoice('safe')">
+            <div style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">${trial.safe_reward}</div>
+            <div class="safe-bar ${getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="selectChoice('safe')" style="display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
                 100%
-            </div>
-            <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">${trial.safe_reward}</div>`;
+            </div>`;
 
         const leftOption = trial.risk_on_left ? riskBarHTML : safeBarHTML;
         const rightOption = trial.risk_on_left ? safeBarHTML : riskBarHTML;
@@ -83,8 +83,8 @@ function getMainTrialsTimeline(mainCount, trialDuration) {
             </div>
             <div class="confidence-container">
                 <div class="confidence-label">On a scale of 0–100, how confident are you in your choice?</div>
-                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="50" oninput="updateConfidence(this.value)">
-                <div class="confidence-value" id="confidence-value">50</div>
+                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="0" oninput="updateConfidence(this.value)">
+                <div class="confidence-value" id="confidence-value">0</div>
             </div>
             <div class="navigation">
                 <button class="next-button" id="next-button" onclick="advanceTrial()" disabled>Next</button>

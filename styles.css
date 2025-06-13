@@ -126,14 +126,14 @@ body {
 
 /* Size classes */
 .size-large {
-    width: 120px;
-    height: 240px;
+    width: 160px;
+    height: 320px;
     font-size: 16px;
 }
 
 .size-small {
-    width: 80px;
-    height: 120px;
+    width: 100px;
+    height: 180px;
     font-size: 12px;
 }
 
@@ -268,8 +268,9 @@ body {
 
 /* Selection highlight */
 .selected-bar {
-    border: 3px solid #000 !important;
-    border-width: 3px;
+    outline: 4px solid #000 !important;
+    outline-offset: 0;
+    border: none !important;
 }
 
 /* Responsive design */
@@ -333,10 +334,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--spacing-lg);
-    height: 340px; /* Fixed height for consistent bar area */
-    min-height: 340px;
-    max-height: 340px;
+    gap: 3.5rem;
+    height: 400px;
+    min-height: 400px;
+    max-height: 400px;
     margin: var(--spacing-lg) 0 var(--spacing-md) 0;
 }
 
@@ -412,13 +413,25 @@ body {
     padding: var(--spacing-md);
     border-radius: var(--border-radius);
     background-color: var(--background-light);
+    text-align: center;
 }
 
 /* Attention Check Styles */
 .attention-check-container {
-    max-width: 600px;
+    width: 700px;
     margin: 0 auto;
     padding: var(--spacing-lg);
+}
+
+.attention-check-prompt,
+.attention-check-options,
+.attention-check-likert,
+.attention-warning,
+.attention-check-input {
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
 }
 
 .attention-check-options, .attention-check-likert {
