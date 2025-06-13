@@ -107,8 +107,29 @@ const jsPsych = initJsPsych({
     }
 });
 
-function runExperiment() {
-    const config = window.EXPERIMENT_CONFIG;
+async function initExperiment() {
+    try {
+        const response = await fetch('config.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const config = await response.json();
+        runExperiment(config);
+    } catch (error) {
+        console.error("Could not load experiment configuration:", error);
+        // Display an error message to the user
+        jsPsych.getDisplayElement().innerHTML = `
+            <div class="instructions">
+                <h2>Error</h2>
+                <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fafafa; color: red;">
+                    <p>Could not load experiment configuration. Please contact the researcher.</p>
+                </div>
+            </div>`;
+    }
+}
+
+function runExperiment(configData) {
+    const { experimentConfig, attentionCheckQuestions } = configData;
     const timeline = [];
 
     // Instructions
@@ -135,7 +156,7 @@ function runExperiment() {
     });
 
     // Practice trials from config
-    timeline.push(...getPracticeTimeline(config.practiceTrials));
+    timeline.push(...getPracticeTimeline(experimentConfig.practiceTrials));
 
     // Transition to main trials
     timeline.push({
@@ -162,11 +183,11 @@ function runExperiment() {
     });
 
     // Main trials from config
-    const mainTrials = getMainTrialsTimeline(config.mainTrials, config.trialDuration);
+    const mainTrials = getMainTrialsTimeline(experimentConfig.mainTrials, experimentConfig.trialDuration);
     
     // Attention checks from config
     const attentionChecks = getAttentionChecks(
-        jsPsych.randomization.sampleWithoutReplacement(window.ATTENTION_CHECK_QUESTIONS, config.attentionChecks)
+        jsPsych.randomization.sampleWithoutReplacement(attentionCheckQuestions, experimentConfig.attentionChecks)
     );
 
     // Intersperse attention checks into main trials
@@ -192,4 +213,4 @@ function runExperiment() {
     jsPsych.run(timeline);
 }
 
-runExperiment(); 
+initExperiment(); 

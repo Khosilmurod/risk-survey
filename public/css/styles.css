@@ -60,7 +60,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: var(--spacing-lg);
+    gap: 144px;
     margin: var(--spacing-lg) 0 var(--spacing-md) 0;
     min-height: 280px;
 }
@@ -410,7 +410,7 @@ body {
     font-weight: 500;
     color: var(--text-primary);
     margin-bottom: var(--spacing-md);
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
     border-radius: var(--border-radius);
     background-color: var(--background-light);
     text-align: center;

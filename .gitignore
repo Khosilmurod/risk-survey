@@ -16,4 +16,7 @@ yarn-error.log*
 .env.production.local
 
 # macOS
-.DS_Store 
+.DS_Store
+
+# Data files
+/data 

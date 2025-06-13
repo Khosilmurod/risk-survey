@@ -10,7 +10,12 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Serve static files from the current directory
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Endpoint to serve config.json
+app.get('/config.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'config.json'));
+});
 
 // Endpoint to save data
 app.post('/save', (req, res) => {
@@ -19,7 +24,7 @@ app.post('/save', (req, res) => {
         return res.status(400).send('No data received.');
     }
 
-    const filePath = path.join(__dirname, 'result.csv');
+    const filePath = path.join(__dirname, 'data', 'result.csv');
     const header = "Sub,Trial,Condition,Condition Response 1 or 2,Confidence 1-100,Page Entry Time,Bar Choice Time,Page Submit Time,Test Condition,Risk Condition,Risky Option Amount,Safe Option Amount,EV Condition\n";
     
     // Check if file exists and has content. If not, write header.
