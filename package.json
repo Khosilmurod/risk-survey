@@ -1,0 +1,15 @@
+{
+  "name": "js-risk-survey",
+  "version": "1.0.0",
+  "description": "This is a complete implementation of a risk survey task using jsPsych, where participants make choices between risky and safe options while rating their confidence.",
+  "main": "attention_checks.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

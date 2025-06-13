@@ -1,0 +1,6 @@
+Sub,Trial,Condition,Condition Response 1 or 2,Confidence 1-100,Page Entry Time,Bar Choice Time,Page Submit Time,Test Condition,Risk Condition,Risky Option Amount,Safe Option Amount,EV Condition
+
+"sub1",1,"risk-large","2",50,0.839,0.839,1.557,"risk-large","75;25",100,50,"Same"
+"sub1",2,"safe-large","2",50,0.775,0.775,1.442,"safe-large","75;25",300,100,"Same"
+"sub1",3,"both-large","1",50,0.932,0.932,1.551,"both-large","25;75",100,100,"Same"
+"sub1",4,"both-large","1",50,0.454,0.454,1.248,"both-large","50;50",100,150,"Same"
