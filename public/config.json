@@ -1,8 +1,8 @@
 {
     "experimentConfig": {
-        "practiceTrials": 8,
-        "mainTrials": 25,
-        "attentionChecks": 6,
+        "practiceTrials": 2,
+        "mainTrials": 8,
+        "attentionChecks": 2,
         "trialDuration": 8000
     },
     "attentionCheckQuestions": [
