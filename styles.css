@@ -80,16 +80,11 @@ body {
 /* Bar styles */
 .risk-bar {
     position: relative;
-    border: 3px solid var(--text-primary);
     margin-bottom: var(--spacing-md);
     display: flex;
     flex-direction: column;
     cursor: pointer;
     transition: border-color 0.2s ease;
-}
-
-.risk-bar:hover {
-    border-color: var(--selected-border);
 }
 
 .risk-bar-red {
@@ -98,9 +93,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
-    border-bottom: 1px solid var(--text-primary);
+    text-align: center;
+    padding: 2px;
 }
 
 .risk-bar-blue {
@@ -109,42 +105,38 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
+    text-align: center;
+    padding: 2px;
 }
 
 .safe-bar {
     background: var(--safe-gray);
     color: white;
+    margin-bottom: var(--spacing-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
-    border: 3px solid var(--text-primary);
-    margin-bottom: var(--spacing-md);
     cursor: pointer;
     transition: border-color 0.2s ease;
 }
 
-.safe-bar:hover {
-    border-color: var(--selected-border);
-}
-
-/* Size variations */
+/* Size classes */
 .size-large {
     width: 120px;
-    height: 280px;
+    height: 240px;
     font-size: 16px;
 }
 
 .size-small {
-    width: 70px;
-    height: 100px;
+    width: 80px;
+    height: 120px;
     font-size: 12px;
 }
 
-/* Reward display */
 .option-container > div:last-child {
     font-weight: 600;
     font-size: 18px;
@@ -154,31 +146,25 @@ body {
 
 /* Confidence slider */
 .confidence-container {
-    margin: var(--spacing-md) 0 var(--spacing-xs) 0;
     text-align: center;
-    padding: 0;
-    border: none;
-    background: none;
-    border-radius: 0;
+    margin: var(--spacing-lg) 0;
 }
 
 .confidence-label {
     font-size: 16px;
-    margin-bottom: var(--spacing-xs);
     font-weight: 500;
     color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
 }
 
 .confidence-slider {
     width: 300px;
     height: 6px;
+    border-radius: 3px;
+    background: var(--text-light);
+    outline: none;
     -webkit-appearance: none;
     appearance: none;
-    background: #e5e5e5;
-    outline: none;
-    border-radius: 3px;
-    margin: var(--spacing-xs) 0;
-    cursor: pointer;
 }
 
 .confidence-slider::-webkit-slider-thumb {
@@ -282,8 +268,8 @@ body {
 
 /* Selection highlight */
 .selected-bar {
-    border-color: var(--selected-border) !important;
-    border-width: 4px;
+    border: 3px solid #000 !important;
+    border-width: 3px;
 }
 
 /* Responsive design */
@@ -426,4 +412,66 @@ body {
     padding: var(--spacing-md);
     border-radius: var(--border-radius);
     background-color: var(--background-light);
+}
+
+/* Attention Check Styles */
+.attention-check-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+.attention-check-options, .attention-check-likert {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.attention-check-option {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.attention-check-option:hover {
+    background-color: var(--background-light);
+}
+
+.attention-check-option input[type="radio"] {
+    margin-right: var(--spacing-sm);
+    transform: scale(1.2);
+}
+
+.attention-check-option span {
+    font-size: 15px;
+    color: var(--text-primary);
+}
+
+.attention-check-input input[type="text"] {
+    width: 100%;
+    padding: var(--spacing-sm);
+    font-size: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+    background-color: var(--background);
+    color: var(--text-primary);
+}
+
+.attention-check-input input[type="text"]:focus {
+    outline: none;
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
+}
+
+.attention-warning {
+    color: var(--risk-red);
+    font-weight: bold;
+    margin-top: var(--spacing-sm);
+    text-align: center;
+    font-size: 16px;
 } 
