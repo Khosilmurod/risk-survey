@@ -1,7 +1,7 @@
 /* Risk Survey Task - Minimalistic Design */
 
-/* Import clean font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+/* Import better fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap');
 
 /* CSS Variables for consistent spacing */
 :root {
@@ -30,7 +30,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
     background: var(--background);
@@ -38,14 +38,52 @@ body {
     line-height: 1.6;
     font-weight: 400;
     font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Main content container */
-.jspsych-content {
-    max-width: 800px;
-    margin: auto auto;
-    background: var(--background);
+.main-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     padding: var(--spacing-xl);
+    background: var(--background);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Trial-specific container for single-page layout */
+.main-container.trial-container-page {
+    height: 100vh;
+    max-height: 100vh;
+    padding: var(--spacing-lg);
+    justify-content: space-between;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Attention check container for centered layout */
+.main-container.attention-check-page {
+    height: 100vh;
+    max-height: 100vh;
+    padding: var(--spacing-lg);
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.jspsych-content {
+    max-width: 100%;
+    margin: 0;
+    background: transparent;
+    padding: 0;
 }
 
 .jspsych-content-wrapper {
@@ -138,28 +176,29 @@ body {
 
 /* Size classes */
 .size-large {
-    width: 160px;
-    height: 320px;
-    font-size: 16px;
+    width: 140px;
+    height: 280px;
+    font-size: 14px;
 }
 
 .size-small {
-    width: 100px;
-    height: 180px;
-    font-size: 12px;
+    width: 90px;
+    height: 160px;
+    font-size: 11px;
 }
 
 /* Confidence slider */
 .confidence-container {
     text-align: center;
-    margin: var(--spacing-lg) 0;
+    margin: var(--spacing-sm) 0;
+    flex-shrink: 0;
 }
 
 .confidence-label {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--text-primary);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
 }
 
 .confidence-slider {
@@ -202,8 +241,9 @@ body {
 /* Navigation */
 .navigation {
     text-align: center;
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-sm);
     margin-bottom: 0;
+    flex-shrink: 0;
 }
 
 .next-button {
@@ -222,6 +262,17 @@ body {
 .next-button:disabled {
     background: var(--text-light);
     cursor: not-allowed;
+}
+
+.trial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+    font-size: 14px;
+    flex-shrink: 0;
 }
 
 /* Instructions */
@@ -280,58 +331,109 @@ body {
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .jspsych-content {
+    .main-container {
         margin: var(--spacing-sm);
         padding: var(--spacing-lg);
+        min-height: 50vh;
     }
     
-    .trial-container {
-        gap: var(--spacing-md);
-        flex-direction: column;
-        min-height: auto;
-    }
-    
-    .option-container {
-        min-width: 140px;
+    .main-container.trial-container-page {
+        margin: var(--spacing-xs);
         padding: var(--spacing-md);
+        height: 100vh;
+        max-height: 100vh;
+    }
+    
+    .main-container.attention-check-page {
+        margin: var(--spacing-xs);
+        padding: var(--spacing-md);
+        height: 100vh;
+        max-height: 100vh;
+    }
+    
+    .bars-area {
+        gap: var(--spacing-lg);
+        min-height: 200px;
+        max-height: 300px;
     }
     
     .size-large {
         width: 100px;
-        height: 220px;
-        font-size: 14px;
+        height: 200px;
+        font-size: 12px;
     }
     
     .size-small {
-        width: 60px;
-        height: 80px;
-        font-size: 11px;
+        width: 70px;
+        height: 120px;
+        font-size: 10px;
     }
     
     .confidence-slider {
         width: 250px;
     }
     
-    .timer {
-        top: var(--spacing-sm);
-        right: var(--spacing-sm);
-        padding: var(--spacing-xs) var(--spacing-sm);
+    .confidence-label {
+        font-size: 13px;
+    }
+    
+    .trial-header {
         font-size: 12px;
+        margin-bottom: var(--spacing-xs);
     }
 }
 
 @media (max-width: 480px) {
-    .jspsych-content {
+    .main-container {
         padding: var(--spacing-md);
+        margin: var(--spacing-xs);
+    }
+    
+    .main-container.trial-container-page {
+        padding: var(--spacing-sm);
+        margin: 0;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .main-container.attention-check-page {
+        padding: var(--spacing-sm);
+        margin: 0;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .bars-area {
+        gap: var(--spacing-md);
+        min-height: 180px;
+        max-height: 250px;
+    }
+    
+    .size-large {
+        width: 80px;
+        height: 160px;
+        font-size: 11px;
+    }
+    
+    .size-small {
+        width: 60px;
+        height: 100px;
+        font-size: 9px;
     }
     
     .confidence-slider {
         width: 200px;
     }
     
+    .confidence-label {
+        font-size: 12px;
+    }
+    
     .next-button {
         padding: var(--spacing-sm) var(--spacing-md);
-        font-size: 14px;
+        font-size: 13px;
     }
 }
 
@@ -340,10 +442,10 @@ body {
     justify-content: center;
     align-items: center;
     gap: 3.5rem;
-    height: 400px;
-    min-height: 400px;
+    flex: 1;
+    min-height: 300px;
     max-height: 400px;
-    margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+    margin: var(--spacing-sm) 0;
 }
 
 /* Hide jsPsych instructions previous button when not wanted */
@@ -492,4 +594,16 @@ body {
     margin-top: var(--spacing-sm);
     text-align: center;
     font-size: 16px;
+}
+
+/* Instruction-specific bar styling */
+.instruction-bar {
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.instruction-bar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 } 
