@@ -263,7 +263,7 @@ class RiskSurveyExperiment {
 
                         <div style="flex: 1; min-width: 300px; text-align: center;">
                             <h3 style="color: var(--safe-gray); margin-bottom: 1rem;">🛡️ Safe Option</h3>
-                            <div class="option" style="margin: 1rem auto;">
+                    <div class="option" style="margin: 1rem auto;">
                                 <div class="option-label" style="font-size: 20px; font-weight: bold; color: var(--text-primary);">150</div>
                                 <div class="safe-bar size-small instruction-bar">
                                     100%
@@ -308,7 +308,7 @@ class RiskSurveyExperiment {
                 
                 <div style="text-align: center; margin-top: 2rem;">
                     <button class="next-button" onclick="experiment.startPractice()">Start</button>
-                </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -557,7 +557,7 @@ class RiskSurveyExperiment {
                     <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 2rem;">
                         The screen will go fullscreen for the main experiment.
                     </p>
-                    <div class="navigation">
+                <div class="navigation">
                         <button class="next-button" onclick="experiment.beginMainTrials()">Begin</button>
                     </div>
                 </div>
@@ -789,7 +789,7 @@ class RiskSurveyExperiment {
                 <div class="option-container">${rightOption}</div>
             </div>
             <div class="confidence-container">
-                <div class="confidence-label" id="confidence-label">Please select a choice first</div>
+                <div class="confidence-label" id="confidence-label">On a scale of 0–100, how confident are you in your choice?</div>
                 <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="50" oninput="experiment.updateConfidence(this.value)" disabled>
                 <div class="confidence-value" id="confidence-value">50</div>
             </div>
