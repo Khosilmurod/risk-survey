@@ -8,6 +8,12 @@
     <link href="css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <script src="js/experiment.js"></script>
+    <!-- Load experiment modules in logical order -->
+    <script src="js/experiment/Experiment.js"></script>
+    <script src="js/experiment/Pages.js"></script>
+    <script src="js/experiment/TrialManager.js"></script>
+    <script src="js/experiment/TrialRunner.js"></script>
+    <script src="js/experiment/DataCollector.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html> 

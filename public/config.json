@@ -1,7 +1,7 @@
 {
     "experimentConfig": {
         "practiceTrials": 2,
-        "mainTrials": 8,
+        "mainTrials": 120,
         "attentionChecks": 2,
         "trialDuration": 8000,
         "barSizes": {
