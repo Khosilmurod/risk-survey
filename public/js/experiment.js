@@ -1,5 +1,13 @@
-// risk survey task - vanilla javascript implementation
-// complete control over timers and trial flow
+/**
+ * Risk Survey Experiment - Main Implementation
+ * A web-based behavioral research experiment measuring risk preferences
+ * 
+ * File Structure:
+ * - Constructor & Initialization
+ * - UI Generation Methods  
+ * - Trial Management
+ * - Data Collection & Export
+ */
 
 class RiskSurveyExperiment {
     constructor() {
@@ -147,6 +155,10 @@ class RiskSurveyExperiment {
                 </div>
             </div>`;
     }
+
+    // ================================
+    // UI GENERATION METHODS
+    // ================================
 
     showWelcomePage() {
         document.body.innerHTML = `
@@ -301,6 +313,10 @@ class RiskSurveyExperiment {
             </div>
         `;
     }
+
+    // ================================
+    // TRIAL GENERATION & MANAGEMENT
+    // ================================
 
     async generateTrials() {
         try {
@@ -565,6 +581,10 @@ class RiskSurveyExperiment {
             this.runNextTrial();
         }
     }
+
+    // ================================
+    // TRIAL EXECUTION & USER INTERACTION
+    // ================================
 
     runNextTrial() {
         if (this.currentTrialIndex >= this.currentTimeline.length) {
@@ -891,6 +911,10 @@ class RiskSurveyExperiment {
         this.currentTrialIndex++;
         this.runNextTrial();
     }
+
+    // ================================
+    // DATA COLLECTION & EXPORT
+    // ================================
 
     saveTrialData(trial) {
         const submitTime = (Date.now() - this.trialStartTime) / 1000;
