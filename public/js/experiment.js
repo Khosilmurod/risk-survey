@@ -1,5 +1,5 @@
-// Risk Survey Task - Vanilla JavaScript Implementation
-// Complete control over timers and trial flow
+// risk survey task - vanilla javascript implementation
+// complete control over timers and trial flow
 
 class RiskSurveyExperiment {
     constructor() {
@@ -15,11 +15,15 @@ class RiskSurveyExperiment {
 
         // Trial state
         this.currentChoice = null;
-        this.currentConfidence = 0;
+        this.currentConfidence = null;
         this.trialStartTime = null;
         this.pageEntryTime = null;
         this.barChoiceTime = null;
         this.sliderInteracted = false;
+        
+        // Session tracking
+        this.sessionId = `ses_${new Date().toISOString().replace(/[-:]/g, '').substring(0, 15)}`;
+        this.sessionStartTime = new Date().toISOString();
     }
 
     async init() {
@@ -33,7 +37,7 @@ class RiskSurveyExperiment {
             this.attentionCheckQuestions = config.attentionCheckQuestions;
             
             this.injectBarSizeCSS();
-            this.generateTrials();
+            await this.generateTrials();
             this.showWelcomePage();
         } catch (error) {
             console.error("Could not load experiment configuration:", error);
@@ -298,8 +302,138 @@ class RiskSurveyExperiment {
         `;
     }
 
-    generateTrials() {
-        // Generate trial combinations
+    async generateTrials() {
+        try {
+            // Load trials from CSV file
+            const trialsData = await this.loadTrialsFromCSV();
+            console.log(`Loaded ${trialsData.length} trials from CSV`);
+            
+            // Simple random selection with no duplicates within the experiment
+            const shuffledTrials = this.shuffle([...trialsData]);
+            
+            // Select trials for main experiment (ensuring no duplicates)
+            const mainTrialCount = Math.min(this.experimentConfig.mainTrials, shuffledTrials.length);
+            const selectedMainTrials = shuffledTrials.slice(0, mainTrialCount);
+            
+            // Select practice trials from remaining trials (or from a separate shuffle)
+            const practiceTrialCount = this.experimentConfig.practiceTrials;
+            const remainingTrials = shuffledTrials.slice(mainTrialCount);
+            let selectedPracticeTrials;
+            
+            if (remainingTrials.length >= practiceTrialCount) {
+                // Use remaining trials for practice
+                selectedPracticeTrials = remainingTrials.slice(0, practiceTrialCount);
+            } else {
+                // Not enough remaining - shuffle again for practice (overlap okay)
+                const practicePool = this.shuffle([...trialsData]);
+                selectedPracticeTrials = practicePool.slice(0, practiceTrialCount);
+            }
+            
+            // Create practice trials
+            this.practiceTrials = selectedPracticeTrials.map((trial, i) => ({
+                trial_number: `practice_${i + 1}`,
+                risk_probability: trial.risk_probability,
+                risk_reward: trial.risk_reward,
+                safe_reward: trial.safe_reward,
+                size_condition: trial.size_condition,
+                risk_on_left: Math.random() < 0.5,
+                is_practice: true,
+                combination_id: trial.combination_id,
+                expected_value: trial.expected_value,
+                trial_id: trial.trial_id
+            }));
+
+            // Create main trials
+            this.trials = selectedMainTrials.map((trial, i) => ({
+                trial_number: i + 1,
+                risk_probability: trial.risk_probability,
+                risk_reward: trial.risk_reward,
+                safe_reward: trial.safe_reward,
+                size_condition: trial.size_condition,
+                risk_on_left: Math.random() < 0.5,
+                is_practice: false,
+                combination_id: trial.combination_id,
+                expected_value: trial.expected_value,
+                trial_id: trial.trial_id
+            }));
+
+            // Select and intersperse attention checks (only if they exist and are requested)
+            this.finalTimeline = [...this.trials];
+            
+            if (this.attentionCheckQuestions && 
+                this.attentionCheckQuestions.length > 0 && 
+                this.experimentConfig.attentionChecks > 0) {
+                
+                const selectedAttentionChecks = this.shuffle([...this.attentionCheckQuestions])
+                    .slice(0, this.experimentConfig.attentionChecks);
+                
+                this.attentionChecks = selectedAttentionChecks.map(q => ({ ...q, is_attention: true }));
+                
+                if (this.attentionChecks.length > 0 && this.trials.length > 0) {
+                    const interval = Math.floor(this.trials.length / (this.attentionChecks.length + 1));
+                    let insertedCount = 0;
+                    
+                    for (let i = 0; i < this.attentionChecks.length; i++) {
+                        const insertPosition = (i + 1) * interval + insertedCount;
+                        if (insertPosition < this.finalTimeline.length) {
+                            this.finalTimeline.splice(insertPosition, 0, this.attentionChecks[i]);
+                            insertedCount++;
+                        } else {
+                            this.finalTimeline.push(this.attentionChecks[i]);
+                        }
+                    }
+                }
+            }
+            
+            console.log(`Generated ${this.practiceTrials.length} practice trials and ${this.trials.length} main trials`);
+            
+        } catch (error) {
+            console.error("Error loading trials from CSV:", error);
+            // Fall back to old generation method if CSV loading fails
+            this.generateTrialsOldMethod();
+        }
+    }
+
+    async loadTrialsFromCSV() {
+        const response = await fetch('full_trials.csv');
+        if (!response.ok) {
+            throw new Error(`Failed to load trials CSV: ${response.status}`);
+        }
+        
+        const csvText = await response.text();
+        const lines = csvText.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) {
+            throw new Error('CSV file appears to be empty or malformed');
+        }
+        
+        const headers = lines[0].split(',');
+        const trials = [];
+        
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',');
+            const trial = {};
+            
+            headers.forEach((header, index) => {
+                const value = values[index];
+                // Convert numeric fields
+                if (['trial_id', 'combination_id', 'risk_probability', 'risk_reward', 'safe_reward', 'expected_value'].includes(header)) {
+                    trial[header] = parseInt(value);
+                } else {
+                    trial[header] = value;
+                }
+            });
+            
+            trials.push(trial);
+        }
+        
+        return trials;
+    }
+
+    generateTrialsOldMethod() {
+        // Fallback method - original trial generation
+        console.log("Using fallback trial generation method");
+        
         const combinations = [];
         const riskProbs = [25, 50, 75];
         const riskRewards = [100, 200, 300];
@@ -344,33 +478,33 @@ class RiskSurveyExperiment {
             is_practice: false
         }));
 
-                 // Select and intersperse attention checks (only if they exist and are requested)
-         this.finalTimeline = [...this.trials];
-         
-         if (this.attentionCheckQuestions && 
-             this.attentionCheckQuestions.length > 0 && 
-             this.experimentConfig.attentionChecks > 0) {
-             
-             const selectedAttentionChecks = this.shuffle([...this.attentionCheckQuestions])
-                 .slice(0, this.experimentConfig.attentionChecks);
-             
-             this.attentionChecks = selectedAttentionChecks.map(q => ({ ...q, is_attention: true }));
-             
-             if (this.attentionChecks.length > 0 && this.trials.length > 0) {
-                 const interval = Math.floor(this.trials.length / (this.attentionChecks.length + 1));
-                 let insertedCount = 0;
-                 
-                 for (let i = 0; i < this.attentionChecks.length; i++) {
-                     const insertPosition = (i + 1) * interval + insertedCount;
-                     if (insertPosition < this.finalTimeline.length) {
-                         this.finalTimeline.splice(insertPosition, 0, this.attentionChecks[i]);
-                         insertedCount++;
-                     } else {
-                         this.finalTimeline.push(this.attentionChecks[i]);
-                     }
-                 }
-             }
-         }
+        // Select and intersperse attention checks (only if they exist and are requested)
+        this.finalTimeline = [...this.trials];
+        
+        if (this.attentionCheckQuestions && 
+            this.attentionCheckQuestions.length > 0 && 
+            this.experimentConfig.attentionChecks > 0) {
+            
+            const selectedAttentionChecks = this.shuffle([...this.attentionCheckQuestions])
+                .slice(0, this.experimentConfig.attentionChecks);
+            
+            this.attentionChecks = selectedAttentionChecks.map(q => ({ ...q, is_attention: true }));
+            
+            if (this.attentionChecks.length > 0 && this.trials.length > 0) {
+                const interval = Math.floor(this.trials.length / (this.attentionChecks.length + 1));
+                let insertedCount = 0;
+                
+                for (let i = 0; i < this.attentionChecks.length; i++) {
+                    const insertPosition = (i + 1) * interval + insertedCount;
+                    if (insertPosition < this.finalTimeline.length) {
+                        this.finalTimeline.splice(insertPosition, 0, this.attentionChecks[i]);
+                        insertedCount++;
+                    } else {
+                        this.finalTimeline.push(this.attentionChecks[i]);
+                    }
+                }
+            }
+        }
     }
 
     shuffle(array) {
@@ -466,7 +600,7 @@ class RiskSurveyExperiment {
         }
     }
 
-         runAttentionCheck(question) {
+    runAttentionCheck(question) {
          this.clearTimer();
          
          let stimulus;
@@ -529,7 +663,7 @@ class RiskSurveyExperiment {
 
          document.body.innerHTML = `<div class="main-container attention-check-page">${stimulus}</div>`;
          this.setupAttentionCheckEvents(question);
-     }
+    }
 
     setupAttentionCheckEvents(question) {
         const nextBtn = document.getElementById('attention-next-btn');
@@ -635,9 +769,9 @@ class RiskSurveyExperiment {
                 <div class="option-container">${rightOption}</div>
             </div>
             <div class="confidence-container">
-                <div class="confidence-label">On a scale of 0–100, how confident are you in your choice?</div>
-                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="0" oninput="experiment.updateConfidence(this.value)">
-                <div class="confidence-value" id="confidence-value">0</div>
+                <div class="confidence-label" id="confidence-label">Please select a choice first</div>
+                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="50" oninput="experiment.updateConfidence(this.value)" disabled>
+                <div class="confidence-value" id="confidence-value">50</div>
             </div>
             <div class="navigation">
                 <button class="next-button" id="next-button" onclick="experiment.advanceTrial()" disabled>Next</button>
@@ -656,9 +790,9 @@ class RiskSurveyExperiment {
 
     resetTrialState() {
         this.currentChoice = null;
-        this.currentConfidence = 0;
+        this.currentConfidence = null;
         this.trialStartTime = Date.now();
-        this.pageEntryTime = null;
+        this.pageEntryTime = (Date.now() - this.trialStartTime) / 1000; // Set immediately when page loads
         this.barChoiceTime = null;
         this.sliderInteracted = false;
     }
@@ -692,10 +826,7 @@ class RiskSurveyExperiment {
 
     selectChoice(choice) {
         const time = (Date.now() - this.trialStartTime) / 1000;
-        if (this.pageEntryTime === null) {
-            this.pageEntryTime = time;
-        }
-        this.barChoiceTime = time;
+        this.barChoiceTime = time; // Record when choice was made
 
         this.currentChoice = choice;
         document.querySelectorAll('.selectable-bar').forEach(bar => {
@@ -705,10 +836,26 @@ class RiskSurveyExperiment {
         if (selectedElement) {
             selectedElement.classList.add('selected-bar');
         }
+        
+        // Enable the confidence slider after bar selection
+        const confidenceSlider = document.getElementById('confidence-slider');
+        const confidenceLabel = document.getElementById('confidence-label');
+        if (confidenceSlider) {
+            confidenceSlider.disabled = false;
+        }
+        if (confidenceLabel) {
+            confidenceLabel.textContent = 'On a scale of 0–100, how confident are you in your choice?';
+        }
+        
         this.checkTrialComplete();
     }
 
     updateConfidence(value) {
+        // Only allow updating if a choice has been made
+        if (this.currentChoice === null) {
+            return;
+        }
+        
         this.currentConfidence = parseInt(value);
         this.sliderInteracted = true;
         const confidenceValueElement = document.getElementById('confidence-value');
@@ -746,38 +893,101 @@ class RiskSurveyExperiment {
     }
 
     saveTrialData(trial) {
-        const choiceResponse = this.currentChoice === null ? 'NA' : (this.currentChoice === 'risk' ? 1 : 2);
-        const pageSubmitTime = (Date.now() - this.trialStartTime) / 1000;
-
-        const row = [
-            `"${this.subjectId || 'unknown'}"`,
-            this.trialCounter++,
-            `"${trial.size_condition}"`,
-            `"${choiceResponse}"`,
-            this.currentConfidence,
-            this.pageEntryTime,
-            this.barChoiceTime,
-            pageSubmitTime,
-            `"${trial.size_condition}"`,
-            `"${trial.risk_probability};${100 - trial.risk_probability}"`,
-            trial.risk_reward,
-            trial.safe_reward,
-            `"Same"`
-        ].join(',') + '\n';
+        const submitTime = (Date.now() - this.trialStartTime) / 1000;
         
-        this.csvData.push(row);
+        // Ensure choice is a proper string value
+        let choiceValue = 'timeout'; // Default if no choice made
+        if (this.currentChoice === 'risk' || this.currentChoice === 'safe') {
+            choiceValue = this.currentChoice;
+        }
+        
+        // Set confidence to NaN if slider wasn't interacted with
+        let confidenceValue = this.sliderInteracted && this.currentConfidence !== null ? this.currentConfidence : NaN;
+        
+        // Calculate intuitive timing metrics
+        const bar_choice_time = this.barChoiceTime || NaN; // Time from page load to bar choice
+        const confidence_choice_time = (this.barChoiceTime && submitTime) ? (submitTime - this.barChoiceTime) : NaN; // Time from bar choice to confidence
+        
+        // Determine positions
+        const riskPosition = trial.risk_on_left ? 'left' : 'right';
+        const safePosition = trial.risk_on_left ? 'right' : 'left';
+        
+        // Calculate expected value comparison
+        const riskEV = (trial.risk_probability / 100) * trial.risk_reward;
+        const safeEV = trial.safe_reward;
+        let ev;
+        if (Math.abs(riskEV - safeEV) < 0.01) { // essentially equal
+            ev = 'same';
+        } else if (safeEV > riskEV) {
+            ev = 'safe';
+        } else {
+            ev = 'risky';
+        }
+        
+        // Create clean CSV row with intuitive field names
+        const row = [
+            this.subjectId || 'unknown',           // participant_id
+            this.trialCounter++,                   // trial_number  
+            trial.size_condition || 'unknown',    // bar_size_condition
+            choiceValue,                           // choice (risk/safe/timeout)
+            confidenceValue,                       // confidence (0-100 or NaN)
+            trial.risk_probability || 0,          // risk_probability
+            trial.risk_reward || 0,               // risk_reward  
+            100,                                   // safe_probability (always 100%)
+            trial.safe_reward || 0,               // safe_reward
+            riskPosition,                          // risk_position (left/right)
+            safePosition,                          // safe_position (left/right)
+            ev,                                    // ev (same/safe/risky)
+            bar_choice_time,                       // bar_choice_time (seconds from page load to bar choice)
+            confidence_choice_time,                // confidence_choice_time (seconds from bar choice to confidence)
+            trial.trial_id || 'unknown'           // trial_id
+        ];
+        
+        // Properly escape CSV fields
+        const escapedRow = row.map(field => {
+            const str = String(field);
+            // If field contains comma, newline, or quote, wrap in quotes and escape internal quotes
+            if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join(',') + '\n';
+        
+        this.csvData.push(escapedRow);
+        
+        // Debug logging with clearer format
+        console.log(`Trial ${this.trialCounter - 1}: choice="${choiceValue}", confidence=${confidenceValue}, ev=${ev}, bar_choice_time=${bar_choice_time}s, confidence_time=${confidence_choice_time}s`);
     }
 
     async finishExperiment() {
+        // Validate data before attempting to save
+        if (!this.csvData || this.csvData.length === 0) {
+            console.error('No data to save!');
+            this.showDataError('No trial data was collected. Please contact the researcher.');
+            return;
+        }
+
+        if (!this.subjectId) {
+            console.error('No subject ID!');
+            this.showDataError('Subject ID is missing. Please contact the researcher.');
+            return;
+        }
+
         document.body.innerHTML = `
             <div class="main-container">
                 <div class="instructions">
                     <h2>Completing the experiment...</h2>
                     <p>Please wait while your data is being saved.</p>
+                    <div style="margin-top: 1rem; color: #666;">
+                        <small>Saving ${this.csvData.length} trial records for subject ${this.subjectId}...</small>
+                    </div>
                 </div>
             </div>`;
 
         try {
+            console.log(`Attempting to save ${this.csvData.length} trials for subject ${this.subjectId}`);
+            console.log('Sample data row:', this.csvData[0]);
+
             const response = await fetch('/save', {
                 method: 'POST',
                 headers: {
@@ -785,6 +995,9 @@ class RiskSurveyExperiment {
                 },
                 body: JSON.stringify({ data: this.csvData.join('') }),
             });
+
+            const responseText = await response.text();
+            console.log('Server response:', responseText);
 
             if (response.ok) {
                 document.body.innerHTML = `
@@ -794,29 +1007,46 @@ class RiskSurveyExperiment {
                             <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fafafa;">
                                 <p style="font-size: 18px; margin-bottom: 1rem;">You have successfully completed the risk survey task.</p>
                                 <p style="color: green; font-weight: bold;">Your responses have been successfully saved.</p>
+                                <div style="margin-top: 1rem; color: #666; font-size: 14px;">
+                                    <small>Subject ID: ${this.subjectId} | Trials completed: ${this.csvData.length}</small>
+                                </div>
                             </div>
                             <p>You may now close this window.</p>
                         </div>
                     </div>`;
-    } else {
-                throw new Error('Save failed');
+            } else {
+                throw new Error(`Server error: ${response.status} - ${responseText}`);
             }
         } catch (err) {
             console.error('Error saving data:', err);
-            document.body.innerHTML = `
-                <div class="main-container">
-                    <div class="instructions">
-                        <h2>Error</h2>
-                        <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fafafa; color: red;">
-                            <p>There was an error saving your data. Please contact the researcher.</p>
+            this.showDataError(`There was an error saving your data: ${err.message}`);
+        }
+    }
+
+    showDataError(message) {
+        document.body.innerHTML = `
+            <div class="main-container">
+                <div class="instructions">
+                    <h2>Data Save Error</h2>
+                    <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fff2f2; color: #d32f2f; border-left: 4px solid #d32f2f;">
+                        <p style="font-weight: bold; margin-bottom: 1rem;">⚠️ Unable to save your data</p>
+                        <p>${message}</p>
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: #f5f5f5; border-radius: 4px;">
+                            <p style="font-weight: bold; margin-bottom: 0.5rem;">Debug Information:</p>
+                            <p style="font-size: 12px; font-family: monospace; margin: 0;">
+                                Subject ID: ${this.subjectId || 'MISSING'}<br>
+                                Trials collected: ${this.csvData?.length || 0}<br>
+                                Timestamp: ${new Date().toISOString()}
+                            </p>
                         </div>
                     </div>
-                </div>`;
-        }
+                    <p>Please screenshot this message and contact the researcher immediately.</p>
+                </div>
+            </div>`;
     }
 }
 
-// Initialize experiment when page loads
+// initialize experiment when page loads
 const experiment = new RiskSurveyExperiment();
 document.addEventListener('DOMContentLoaded', () => {
     experiment.init();

@@ -231,6 +231,23 @@ body {
     border: none;
 }
 
+/* Disabled confidence slider styles */
+.confidence-slider:disabled {
+    background: #e0e0e0;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.confidence-slider:disabled::-webkit-slider-thumb {
+    background: #bbb;
+    cursor: not-allowed;
+}
+
+.confidence-slider:disabled::-moz-range-thumb {
+    background: #bbb;
+    cursor: not-allowed;
+}
+
 .confidence-value {
     font-size: 16px;
     font-weight: 600;
