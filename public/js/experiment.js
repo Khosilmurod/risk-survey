@@ -136,15 +136,34 @@ function runExperiment(configData) {
     timeline.push({
         type: jsPsychInstructions,
         pages: [
-            `<div class="instructions">
-                <h2>Risk Survey Task</h2>
-                <p>Welcome to our decision-making study. In this task, you will make a series of choices between different options involving risk and reward.</p>
-                <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fafafa; max-width: 700px; margin-left: auto; margin-right: auto;">
-                    <h3 style="margin-top: 0; font-size: 18px;">Instructions</h3>
-                    <p style="text-align: left; max-width: 600px; margin: 0 auto;">
-                        On each screen, you will see two colored bars. Each bar represents a different option you could choose. The height of each colored section shows the probability (in percent) of winning or losing for that option. For example, a bar with 75% red and 25% blue means a 75% chance to win and a 25% chance to lose. The number below each bar shows the number of points you could win if you choose that option and win.<br><br>
-                        To make your choice, click on the bar you would select; your selection will be highlighted. After choosing, use the slider to indicate how confident you are in your decision (0 = not at all confident, 100 = completely confident). Click the <strong>Next</strong> button to continue. <strong>There will be an 8-second time limit for each decision.</strong> Please consider each choice carefully and answer as honestly as possible. Your responses are important for our research.
-                    </p>
+            `<div class="instructions" style="text-align: left; max-width: 800px; margin: auto;">
+                <h2>Instructions for the Decision-Making Task</h2>
+                <p>In this study, you will be making decisions between different monetary choices. These choices represent hypothetical situations, but you should choose as if the decisions were real.</p>
+                
+                <h3>1. Understanding Monetary Choices</h3>
+                <p>On each screen, you will be presented with two options—one will be a lottery, and the other will be a guaranteed amount.</p>
+                
+                <div>
+                    <p style="margin-left: 20px;"><strong>&bull; Option 1:</strong> A lottery has two possible outcomes. In the example below, the outcomes are 200 points or 0. The red and blue areas and the numbers within them represent the chance for obtaining these outcomes. There is a 75% chance of obtaining 200 points and a 25% chance of obtaining 0 points.</p>
+                    <div class="option" style="margin: 1rem auto;">
+                        <div class="option-label option-label-top">200</div>
+                        <div class="risk-bar size-small">
+                            <div class="risk-bar-red" style="height: 75%;">75%</div>
+                            <div class="risk-bar-blue" style="height: 25%;">25%</div>
+                        </div>
+                        <div class="option-label option-label-bottom">0</div>
+                    </div>
+                </div>
+
+                <div>
+                    <p style="margin-left: 20px;"><strong>&bull; Option 2:</strong> A guaranteed outcome where you have a 100% chance (shown in the black bar) to win a specific number of points, such as 150 points seen in this example.</p>
+                    <div class="option" style="margin: 1rem auto;">
+                        <div class="option-label option-label-top">150</div>
+                        <div class="safe-bar size-small">
+                            100%
+                        </div>
+                        <div class="option-label option-label-bottom" style="visibility: hidden;">0</div>
+                    </div>
                 </div>
             </div>`
         ],

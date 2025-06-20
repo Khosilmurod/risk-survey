@@ -7,6 +7,7 @@ window.trialStartTime = null;
 window.pageEntryTime = null;
 window.barChoiceTime = null;
 window.trialActive = false; // Guard to prevent double finish
+window.sliderInteracted = false; // Track if slider has been touched
 
 // --- Functions attached to the window object to be globally accessible ---
 
@@ -32,6 +33,7 @@ window.selectChoice = function(choice) {
 // Called when the confidence slider value changes
 window.updateConfidence = function(value) {
     window.currentConfidence = parseInt(value);
+    window.sliderInteracted = true;
     const confidenceValueElement = document.getElementById('confidence-value');
     if (confidenceValueElement) {
         confidenceValueElement.textContent = value;
@@ -39,10 +41,10 @@ window.updateConfidence = function(value) {
     window.checkTrialComplete();
 };
 
-// Enables the 'Next' button if a choice has been made AND confidence > 0
+// Enables the 'Next' button if a choice has been made AND slider has been interacted with
 window.checkTrialComplete = function() {
     const nextButton = document.getElementById('next-button');
-    if (nextButton && window.currentChoice !== null && window.currentConfidence > 0) {
+    if (nextButton && window.currentChoice !== null && window.sliderInteracted) {
         nextButton.disabled = false;
     } else if (nextButton) {
         nextButton.disabled = true;
@@ -64,6 +66,7 @@ window.resetTrialState = function() {
     window.pageEntryTime = null;
     window.barChoiceTime = null;
     window.trialActive = true;
+    window.sliderInteracted = false;
     const slider = document.getElementById('confidence-slider');
     if (slider) {
         slider.value = 0;

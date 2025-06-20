@@ -54,20 +54,26 @@ function getPracticeTimeline(practiceCount) {
 
     function createTrialHTML(trial) {
         const riskBarHTML = `
-            <div style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">${trial.risk_reward}</div>
-            <div class="risk-bar ${getSizeClass(trial.size_condition, 'risk')} selectable-bar" id="risk-bar" onclick="selectChoice('risk')">
-                <div class="risk-bar-red" style="height: ${trial.risk_probability}%;">
-                    ${trial.risk_probability}%
+            <div class="option">
+                <div class="option-label option-label-top">${trial.risk_reward}</div>
+                <div class="risk-bar ${getSizeClass(trial.size_condition, 'risk')} selectable-bar" id="risk-bar" onclick="selectChoice('risk')">
+                    <div class="risk-bar-red" style="height: ${trial.risk_probability}%;">
+                        ${trial.risk_probability}%
+                    </div>
+                    <div class="risk-bar-blue" style="height: ${100 - trial.risk_probability}%;">
+                        ${100 - trial.risk_probability}%
+                    </div>
                 </div>
-                <div class="risk-bar-blue" style="height: ${100 - trial.risk_probability}%;">
-                    ${100 - trial.risk_probability}%
-                </div>
+                <div class="option-label option-label-bottom">0</div>
             </div>`;
 
         const safeBarHTML = `
-            <div style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">${trial.safe_reward}</div>
-            <div class="safe-bar ${getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="selectChoice('safe')" style="display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
-                100%
+            <div class="option">
+                <div class="option-label option-label-top">${trial.safe_reward}</div>
+                <div class="safe-bar ${getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="selectChoice('safe')">
+                    100%
+                </div>
+                <div class="option-label option-label-bottom" style="visibility: hidden;">0</div>
             </div>`;
 
         const leftOption = trial.risk_on_left ? riskBarHTML : safeBarHTML;
@@ -84,7 +90,7 @@ function getPracticeTimeline(practiceCount) {
                 <div class="confidence-value" id="confidence-value">0</div>
             </div>
             <div class="navigation">
-                <button class="next-button" id="next-button" onclick="advanceTrial()" disabled>Next Trial</button>
+                <button class="next-button" id="next-button" onclick="advanceTrial()" disabled>Next</button>
             </div>`;
     }
 
