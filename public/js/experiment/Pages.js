@@ -104,12 +104,12 @@ Object.assign(RiskSurveyExperiment.prototype, {
                             
                             <div style="text-align: center; margin: 2rem 0;">
                                 <div class="option" style="margin: 1rem auto; display: inline-block;">
-                                    <div class="option-label" style="font-size: 18px; font-weight: 600; color: var(--text-primary); padding: var(--spacing-sm) 0;">200</div>
+                                    <div class="option-label">200</div>
                                     <div class="risk-bar size-small">
                                         <div class="risk-bar-red" style="height: 75%;">75%</div>
                                         <div class="risk-bar-blue" style="height: 25%;">25%</div>
                                     </div>
-                                    <div class="option-label" style="font-size: 18px; font-weight: 600; color: var(--text-primary); padding: var(--spacing-sm) 0;">0</div>
+                                    <div class="option-label">0</div>
                                 </div>
                             </div>
                         </div>
@@ -121,11 +121,11 @@ Object.assign(RiskSurveyExperiment.prototype, {
                             
                             <div style="text-align: center; margin: 2rem 0;">
                                 <div class="option" style="margin: 1rem auto; display: inline-block;">
-                                    <div class="option-label" style="font-size: 18px; font-weight: 600; color: var(--text-primary); padding: var(--spacing-sm) 0;">150</div>
+                                    <div class="option-label">150</div>
                                     <div class="safe-bar size-small">
                                         100%
                                     </div>
-                                    <div class="option-label" style="font-size: 18px; font-weight: 600; color: var(--text-primary); padding: var(--spacing-sm) 0; visibility: hidden;">0</div>
+                                    <div class="option-label" style="visibility: hidden;">0</div>
                                 </div>
                             </div>
                         </div>

@@ -187,6 +187,15 @@ body {
     font-size: 11px;
 }
 
+/* Font size classes for option labels */
+.size-large .option-label {
+    font-size: 18px !important;
+}
+
+.size-small .option-label {
+    font-size: 10px !important;
+}
+
 /* Confidence slider */
 .confidence-container {
     text-align: center;

@@ -19,19 +19,9 @@ Object.assign(RiskSurveyExperiment.prototype, {
             const mainTrialCount = Math.min(this.experimentConfig.mainTrials, shuffledTrials.length);
             const selectedMainTrials = shuffledTrials.slice(0, mainTrialCount);
             
-            // Select practice trials from remaining trials (or from a separate shuffle)
-            const practiceTrialCount = this.experimentConfig.practiceTrials;
-            const remainingTrials = shuffledTrials.slice(mainTrialCount);
-            let selectedPracticeTrials;
-            
-            if (remainingTrials.length >= practiceTrialCount) {
-                // Use remaining trials for practice
-                selectedPracticeTrials = remainingTrials.slice(0, practiceTrialCount);
-            } else {
-                // Not enough remaining - shuffle again for practice (overlap okay)
-                const practicePool = this.shuffle([...trialsData]);
-                selectedPracticeTrials = practicePool.slice(0, practiceTrialCount);
-            }
+            // Create fixed set of 8 practice trials with good variety
+            const fixedPracticeTrials = this.createFixedPracticeTrials(trialsData);
+            const selectedPracticeTrials = fixedPracticeTrials;
             
             // Create practice trials
             this.practiceTrials = selectedPracticeTrials.map((trial, i) => ({
@@ -132,6 +122,23 @@ Object.assign(RiskSurveyExperiment.prototype, {
         }
         
         return trials;
+    },
+
+    createFixedPracticeTrials(trialsData) {
+        // Create a fixed set of 8 practice trials with good variety
+        // These will be the same for all participants
+        const practiceTrialIds = [1, 15, 30, 45, 60, 75, 90, 105]; // Fixed trial IDs for practice
+        
+        const fixedPracticeTrials = practiceTrialIds.map(id => {
+            const trial = trialsData.find(t => t.trial_id === id);
+            if (!trial) {
+                // Fallback: use first available trial if specific ID not found
+                return trialsData[0];
+            }
+            return trial;
+        });
+        
+        return fixedPracticeTrials;
     },
 
     shuffle(array) {

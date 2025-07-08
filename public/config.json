@@ -1,7 +1,7 @@
 {
     "experimentConfig": {
-        "practiceTrials": 2,
-        "mainTrials": 120,
+        "practiceTrials": 8,
+        "mainTrials": 8,
         "attentionChecks": 2,
         "trialDuration": 8000,
         "barSizes": {
@@ -13,6 +13,11 @@
                 "width": 90,
                 "height": 160
             }
+        },
+        "fontSizes": {
+            "small": 10,
+            "medium": 14,
+            "large": 18
         }
     },
     "attentionCheckQuestions": [

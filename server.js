@@ -446,7 +446,7 @@ async function connectToDb() {
     const client = new MongoClient(MONGODB_URI);
     await client.connect();
     console.log('Connected to MongoDB');
-    db = client.db('risk_survey'); // You can name your database here
+    db = client.db('universal'); // You can name your database here
 }
 
 connectToDb().then(() => {

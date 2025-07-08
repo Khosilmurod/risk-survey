@@ -63,9 +63,9 @@ class RiskSurveyExperiment {
         const smallWidth = this.experimentConfig.barSizes.small.width;
         const smallHeight = this.experimentConfig.barSizes.small.height;
 
-        // Calculate font sizes based on bar width (make them larger and more readable)
-        const largeFontSize = Math.max(14, Math.floor(largeWidth / 8));
-        const smallFontSize = Math.max(12, Math.floor(smallWidth / 6));
+        // Use config font sizes
+        const largeFontSize = this.experimentConfig.fontSizes.large;
+        const smallFontSize = this.experimentConfig.fontSizes.small;
 
         styleElement.textContent = `
             .size-large, .size-large.risk-bar, .size-large.safe-bar {
@@ -78,6 +78,10 @@ class RiskSurveyExperiment {
                 font-size: ${largeFontSize}px !important;
             }
             
+            .size-large .option-label {
+                font-size: ${largeFontSize}px !important;
+            }
+            
             .size-small, .size-small.risk-bar, .size-small.safe-bar {
                 width: ${smallWidth}px !important;
                 height: ${smallHeight}px !important;
@@ -85,6 +89,10 @@ class RiskSurveyExperiment {
             }
             
             .size-small .risk-bar-red, .size-small .risk-bar-blue {
+                font-size: ${smallFontSize}px !important;
+            }
+            
+            .size-small .option-label {
                 font-size: ${smallFontSize}px !important;
             }
 
@@ -100,6 +108,10 @@ class RiskSurveyExperiment {
                     font-size: ${Math.max(8, largeFontSize * 0.8)}px !important;
                 }
                 
+                .size-large .option-label {
+                    font-size: ${Math.max(8, largeFontSize * 0.8)}px !important;
+                }
+                
                 .size-small, .size-small.risk-bar, .size-small.safe-bar {
                     width: ${Math.max(50, smallWidth * 0.7)}px !important;
                     height: ${Math.max(80, smallHeight * 0.7)}px !important;
@@ -107,6 +119,10 @@ class RiskSurveyExperiment {
                 }
                 
                 .size-small .risk-bar-red, .size-small .risk-bar-blue {
+                    font-size: ${Math.max(7, smallFontSize * 0.8)}px !important;
+                }
+                
+                .size-small .option-label {
                     font-size: ${Math.max(7, smallFontSize * 0.8)}px !important;
                 }
             }
@@ -122,6 +138,10 @@ class RiskSurveyExperiment {
                     font-size: ${Math.max(7, largeFontSize * 0.7)}px !important;
                 }
                 
+                .size-large .option-label {
+                    font-size: ${Math.max(7, largeFontSize * 0.7)}px !important;
+                }
+                
                 .size-small, .size-small.risk-bar, .size-small.safe-bar {
                     width: ${Math.max(40, smallWidth * 0.6)}px !important;
                     height: ${Math.max(70, smallHeight * 0.6)}px !important;
@@ -129,6 +149,10 @@ class RiskSurveyExperiment {
                 }
                 
                 .size-small .risk-bar-red, .size-small .risk-bar-blue {
+                    font-size: ${Math.max(6, smallFontSize * 0.7)}px !important;
+                }
+                
+                .size-small .option-label {
                     font-size: ${Math.max(6, smallFontSize * 0.7)}px !important;
                 }
             }
