@@ -6,12 +6,12 @@
         "trialDuration": 8000,
         "barSizes": {
             "large": {
-                "width": 140,
-                "height": 280
+                "width": 150,
+                "height": 450
             },
             "small": {
-                "width": 90,
-                "height": 160
+                "width": 75,
+                "height": 200
             }
         },
         "fontSizes": {

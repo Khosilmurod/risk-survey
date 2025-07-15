@@ -169,27 +169,33 @@ Object.assign(RiskSurveyExperiment.prototype, {
     },
 
     createTrialHTML(trial, totalTrials) {
+        // Get styles directly from config
+        const riskSizeClass = this.getSizeClass(trial.size_condition, 'risk');
+        const safeSizeClass = this.getSizeClass(trial.size_condition, 'safe');
+        const riskStyles = this.getBarStyles(riskSizeClass);
+        const safeStyles = this.getBarStyles(safeSizeClass);
+        
         const riskBarHTML = `
             <div class="option">
-                <div class="option-label option-label-top">${trial.risk_reward}</div>
-                <div class="risk-bar ${this.getSizeClass(trial.size_condition, 'risk')} selectable-bar" id="risk-bar" onclick="experiment.selectChoice('risk')">
-                    <div class="risk-bar-red" style="height: ${trial.risk_probability}%;">
+                <div class="option-label option-label-top" style="${riskStyles.text}">${trial.risk_reward}</div>
+                <div class="risk-bar selectable-bar" id="risk-bar" onclick="experiment.selectChoice('risk')" style="${riskStyles.bar}">
+                    <div class="risk-bar-red" style="height: ${trial.risk_probability}%; ${riskStyles.text}">
                         ${trial.risk_probability}%
                     </div>
-                    <div class="risk-bar-blue" style="height: ${100 - trial.risk_probability}%;">
+                    <div class="risk-bar-blue" style="height: ${100 - trial.risk_probability}%; ${riskStyles.text}">
                         ${100 - trial.risk_probability}%
                     </div>
                 </div>
-                <div class="option-label option-label-bottom">0</div>
+                <div class="option-label option-label-bottom" style="${riskStyles.text}">0</div>
             </div>`;
 
         const safeBarHTML = `
             <div class="option">
-                <div class="option-label option-label-top">${trial.safe_reward}</div>
-                <div class="safe-bar ${this.getSizeClass(trial.size_condition, 'safe')} selectable-bar" id="safe-bar" onclick="experiment.selectChoice('safe')">
+                <div class="option-label option-label-top" style="${safeStyles.text}">${trial.safe_reward}</div>
+                <div class="safe-bar selectable-bar" id="safe-bar" onclick="experiment.selectChoice('safe')" style="${safeStyles.bar}">
                     100%
                 </div>
-                <div class="option-label option-label-bottom" style="visibility: hidden;">0</div>
+                <div class="option-label option-label-bottom" style="visibility: hidden; ${safeStyles.text}">0</div>
             </div>`;
 
         const leftOption = trial.risk_on_left ? riskBarHTML : safeBarHTML;
@@ -224,7 +230,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
             case 'both-small': return 'size-small';
             case 'risk-large': return optionType === 'risk' ? 'size-large' : 'size-small';
             case 'safe-large': return optionType === 'safe' ? 'size-large' : 'size-small';
-            default: return 'size-large';
+            default: return 'size-small';
         }
     },
 

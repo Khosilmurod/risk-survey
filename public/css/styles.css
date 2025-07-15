@@ -61,12 +61,12 @@ body {
 
 /* Trial-specific container for single-page layout */
 .main-container.trial-container-page {
-    height: 100vh;
-    max-height: 100vh;
-    padding: var(--spacing-lg);
-    justify-content: space-between;
-    overflow: hidden;
+    min-height: 100vh;
+    max-height: none;
+    padding: var(--spacing-sm);
+    overflow-y: auto;
     box-sizing: border-box;
+    display: block;
 }
 
 /* Attention check container for centered layout */
@@ -124,7 +124,6 @@ body {
 /* New class for option labels */
 .option-label {
     font-weight: 600;
-    font-size: 18px;
     color: var(--text-primary);
     padding: var(--spacing-sm) 0;
 }
@@ -145,7 +144,6 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 14px;
     text-align: center;
     padding: 2px;
 }
@@ -157,7 +155,6 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 14px;
     text-align: center;
     padding: 2px;
 }
@@ -169,45 +166,23 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 14px;
     cursor: pointer;
     transition: border-color 0.2s ease;
 }
 
-/* Size classes */
-.size-large {
-    width: 140px;
-    height: 280px;
-    font-size: 14px;
-}
-
-.size-small {
-    width: 90px;
-    height: 160px;
-    font-size: 11px;
-}
-
-/* Font size classes for option labels */
-.size-large .option-label {
-    font-size: 18px !important;
-}
-
-.size-small .option-label {
-    font-size: 10px !important;
-}
+/* Size classes - All sizing now comes from config.json via dynamic CSS injection */
 
 /* Confidence slider */
 .confidence-container {
     text-align: center;
-    margin: var(--spacing-sm) 0;
-    flex-shrink: 0;
+    margin: 15px 0;
 }
 
 .confidence-label {
     font-size: 14px;
     font-weight: 500;
     color: var(--text-primary);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 10px;
 }
 
 .confidence-slider {
@@ -267,8 +242,8 @@ body {
 /* Navigation */
 .navigation {
     text-align: center;
-    margin-top: var(--spacing-sm);
-    margin-bottom: 0;
+    margin-top: 10px;
+    margin-bottom: var(--spacing-sm);
     flex-shrink: 0;
 }
 
@@ -294,8 +269,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-sm) 0;
-    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+    margin-bottom: var(--spacing-xs);
     color: var(--text-secondary);
     font-size: 14px;
     flex-shrink: 0;
@@ -365,9 +340,10 @@ body {
     
     .main-container.trial-container-page {
         margin: var(--spacing-xs);
-        padding: var(--spacing-md);
-        height: 100vh;
-        max-height: 100vh;
+        padding: var(--spacing-sm);
+        min-height: 100vh;
+        max-height: none;
+        overflow-y: auto;
     }
     
     .main-container.attention-check-page {
@@ -379,21 +355,12 @@ body {
     
     .bars-area {
         gap: var(--spacing-lg);
-        min-height: 200px;
-        max-height: 300px;
+        min-height: 250px;
+        height: auto;
+        margin: 10px 0;
     }
     
-    .size-large {
-        width: 100px;
-        height: 200px;
-        font-size: 12px;
-    }
-    
-    .size-small {
-        width: 70px;
-        height: 120px;
-        font-size: 10px;
-    }
+    /* Mobile sizing comes from dynamic CSS injection */
     
     .confidence-slider {
         width: 250px;
@@ -416,11 +383,12 @@ body {
     }
     
     .main-container.trial-container-page {
-        padding: var(--spacing-sm);
+        padding: var(--spacing-xs);
         margin: 0;
-        height: 100vh;
-        max-height: 100vh;
+        min-height: 100vh;
+        max-height: none;
         border-radius: 0;
+        overflow-y: auto;
     }
     
     .main-container.attention-check-page {
@@ -433,21 +401,12 @@ body {
     
     .bars-area {
         gap: var(--spacing-md);
-        min-height: 180px;
-        max-height: 250px;
+        min-height: 220px;
+        height: auto;
+        margin: 10px 0;
     }
     
-    .size-large {
-        width: 80px;
-        height: 160px;
-        font-size: 11px;
-    }
-    
-    .size-small {
-        width: 60px;
-        height: 100px;
-        font-size: 9px;
-    }
+    /* Mobile sizing comes from dynamic CSS injection */
     
     .confidence-slider {
         width: 200px;
@@ -468,10 +427,9 @@ body {
     justify-content: center;
     align-items: center;
     gap: 3.5rem;
-    flex: 1;
-    min-height: 300px;
-    max-height: 400px;
-    margin: var(--spacing-sm) 0;
+    height: auto;
+    min-height: 450px;
+    margin: 15px 0;
 }
 
 /* Hide jsPsych instructions previous button when not wanted */
