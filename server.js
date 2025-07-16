@@ -289,8 +289,8 @@ app.get('/:urlPath', async (req, res) => {
 // Function to serve CSV results
 async function serveCsvResults(res) {
     try {
-        const resultsCollection = db.collection('results');
-        const results = await resultsCollection.find({}).sort({ timestamp: 1 }).toArray();
+        const resultCollection = db.collection('result');
+        const results = await resultCollection.find({}).sort({ timestamp: 1 }).toArray();
         
         if (results.length === 0) {
             return res.status(404).send('No results found');
@@ -383,7 +383,7 @@ app.post('/save', async (req, res) => {
     }
 
     try {
-        const resultsCollection = db.collection('results');
+        const resultCollection = db.collection('result');
         const header = "participant_id,trial_number,bar_size_condition,choice,confidence,risk_probability,risk_reward,safe_probability,safe_reward,risk_position,safe_position,ev,bar_choice_time,confidence_choice_time,trial_id";
         const keys = header.split(',');
         
@@ -429,7 +429,7 @@ app.post('/save', async (req, res) => {
         console.log('Sample entry:', entries[0]);
 
         if (entries.length > 0) {
-            await resultsCollection.insertMany(entries);
+            await resultCollection.insertMany(entries);
         }
         
         res.status(200).send(`Data saved successfully. ${entries.length} entries processed.`);
