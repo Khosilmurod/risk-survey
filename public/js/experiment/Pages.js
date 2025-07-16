@@ -152,17 +152,9 @@ Object.assign(RiskSurveyExperiment.prototype, {
                         </p>
                     </div>
                     
-                    <div style="margin: 2rem 0; padding: 2rem; border-left: 4px solid #bee5eb;">
-                        <h2 style="margin-top: 0; color: var(--text-primary); font-size: 1.6rem; font-weight: 400;">🎯 What to Expect</h2>
-                        <ul style="margin-bottom: 0; color: var(--text-primary); line-height: 1.7; font-size: 1.1rem; font-weight: 300; margin-left: 2rem;">
-                            <li style="margin-bottom: 1rem;"><strong>${this.config?.practiceTrials || 2} practice trials</strong> to get familiar</li>
-                            <li style="margin-bottom: 1rem;"><strong>${this.config?.mainTrials || 120} main trials</strong> with different choices</li>
-                            <li style="margin-bottom: 1rem;">Some <strong>attention checks</strong> during the task</li>
-                        </ul>
-                    </div>
-                
-                <div style="text-align: center; margin-top: 3rem;">
-                    <button class="next-button" onclick="experiment.startPractice()">Start Practice</button>
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="next-button" onclick="experiment.startPractice()">Start Practice</button>
+                        </div>
                     </div>
                 </div>
             </div>
