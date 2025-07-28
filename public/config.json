@@ -23,19 +23,19 @@
     "attentionCheckQuestions": [
         {
             "type": "multi-choice",
-            "prompt": "Please select \"Berlin\" regardless of the truth. Which of the following is the capital city of France?",
+            "prompt": "Which of the following is the capital city of France? Please select \"Berlin\" regardless of the truth. ",
             "options": ["France", "Berlin", "London", "Madrid", "Paris"],
             "correct_answer": "Berlin"
         },
         {
             "type": "multi-choice",
-            "prompt": "Please select \"lion\" regardless of the truth. Which one of the animals below is not a mammal?",
+            "prompt": "Which one of the animals below is not a mammal? Please select \"lion\" regardless of the truth. ",
             "options": ["Lion", "Dog", "Cat", "Bird", "None of them"],
             "correct_answer": "Lion"
         },
         {
             "type": "multi-choice",
-            "prompt": "Please select \"circle\" regardless of the correct answer. Which shape has three sides?",
+            "prompt": "Which shape has three sides? Please select \"circle\" regardless of the correct answer.",
             "options": ["Triangle", "Circle", "Square", "Rectangle", "Pentagon"],
             "correct_answer": "Circle"
         }

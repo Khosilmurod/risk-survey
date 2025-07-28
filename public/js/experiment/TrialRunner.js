@@ -3,6 +3,11 @@
  * Handles running individual trials, timers, user input, and attention checks
  */
 
+// Utility function to format numbers with commas
+function formatNumberWithCommas(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // Add trial execution methods to the RiskSurveyExperiment class
 Object.assign(RiskSurveyExperiment.prototype, {
     
@@ -177,7 +182,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
         
         const riskBarHTML = `
             <div class="option">
-                <div class="option-label option-label-top" style="${riskStyles.text}">${trial.risk_reward}</div>
+                <div class="option-label option-label-top" style="${riskStyles.text}">${formatNumberWithCommas(trial.risk_reward)}</div>
                 <div class="risk-bar selectable-bar" id="risk-bar" onclick="experiment.selectChoice('risk')" style="${riskStyles.bar}">
                     <div class="risk-bar-red" style="height: ${trial.risk_probability}%; ${riskStyles.text}">
                         ${trial.risk_probability}%
@@ -191,7 +196,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
 
         const safeBarHTML = `
             <div class="option">
-                <div class="option-label option-label-top" style="${safeStyles.text}">${trial.safe_reward}</div>
+                <div class="option-label option-label-top" style="${safeStyles.text}">${formatNumberWithCommas(trial.safe_reward)}</div>
                 <div class="safe-bar selectable-bar" id="safe-bar" onclick="experiment.selectChoice('safe')" style="${safeStyles.bar}">
                     100%
                 </div>
