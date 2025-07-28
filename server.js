@@ -277,8 +277,8 @@ app.get('/:urlPath', async (req, res) => {
             `);
         }
         
-        // Password correct, serve CSV data
-        await serveCsvResults(res);
+        // Password correct, show download page
+        await showDownloadPage(res, requestedPath, providedPassword);
         
     } catch (error) {
         console.error('Error in protected route:', error);
@@ -286,7 +286,189 @@ app.get('/:urlPath', async (req, res) => {
     }
 });
 
-// Function to serve CSV results
+// Function to show download page with both buttons
+async function showDownloadPage(res, urlPath, password) {
+    const downloadPageHTML = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Download Data</title>
+            <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+                * {
+                    box-sizing: border-box;
+                }
+                
+                body {
+                    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background: #fff;
+                    color: #333;
+                    line-height: 1.6;
+                    font-weight: 400;
+                    font-size: 16px;
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .main-container {
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 3rem;
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                    text-align: center;
+                }
+                
+                h2 {
+                    color: #333;
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 1rem;
+                }
+                
+                p {
+                    color: #666;
+                    margin-bottom: 2rem;
+                }
+                
+                .download-buttons {
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    margin: 2rem 0;
+                }
+                
+                .download-button {
+                    padding: 15px 30px;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    font-family: inherit;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    text-decoration: none;
+                    display: inline-block;
+                    min-width: 200px;
+                }
+                
+                .trial-data-button {
+                    background: #2563eb;
+                    color: white;
+                }
+                
+                .trial-data-button:hover {
+                    background: #1d4ed8;
+                    transform: translateY(-1px);
+                }
+                
+                .attention-data-button {
+                    background: #dc2626;
+                    color: white;
+                }
+                
+                .attention-data-button:hover {
+                    background: #b91c1c;
+                    transform: translateY(-1px);
+                }
+                
+                @media (max-width: 768px) {
+                    .main-container {
+                        padding: 2rem;
+                        margin: 1rem;
+                    }
+                    
+                    .download-buttons {
+                        flex-direction: column;
+                        align-items: center;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="main-container">
+                <h2>📊 Download Experiment Data</h2>
+                <p>Access granted. Choose which dataset you would like to download:</p>
+                
+                <div class="download-buttons">
+                    <a href="/${urlPath}/${password}/download-trial" class="download-button trial-data-button">
+                        📈 Download Trial Data (CSV)
+                    </a>
+                    <a href="/${urlPath}/${password}/download-attention" class="download-button attention-data-button">
+                        ⚠️ Download Attention Check Data (CSV)
+                    </a>
+                </div>
+                
+                <p style="font-size: 14px; color: #999; margin-top: 3rem;">
+                    Trial data contains participant responses to risk choices.<br>
+                    Attention check data contains validation question responses.
+                </p>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    res.send(downloadPageHTML);
+}
+
+// Route for downloading trial data via /{url}/{password}/download-trial
+app.get('/:urlPath/:password/download-trial', async (req, res) => {
+    const { urlPath, password } = req.params;
+    
+    try {
+        const settings = await db.collection('settings').findOne({ url: urlPath });
+        
+        if (!settings) {
+            return res.status(404).send('Page not found');
+        }
+        
+        if (settings.password !== password) {
+            return res.status(401).send('Invalid password');
+        }
+        
+        // Serve the trial data CSV
+        await serveCsvResults(res);
+        
+    } catch (error) {
+        console.error('Error in download-trial route:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Route for downloading attention check data via /{url}/{password}/download-attention
+app.get('/:urlPath/:password/download-attention', async (req, res) => {
+    const { urlPath, password } = req.params;
+    
+    try {
+        const settings = await db.collection('settings').findOne({ url: urlPath });
+        
+        if (!settings) {
+            return res.status(404).send('Page not found');
+        }
+        
+        if (settings.password !== password) {
+            return res.status(401).send('Invalid password');
+        }
+        
+        // Serve the attention check data CSV
+        await serveAttentionCheckCsv(res);
+        
+    } catch (error) {
+        console.error('Error in download-attention route:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Function to serve CSV results (renamed for clarity)
 async function serveCsvResults(res) {
     try {
         const resultCollection = db.collection('result');
@@ -336,6 +518,54 @@ async function serveCsvResults(res) {
     } catch (error) {
         console.error('Error generating CSV:', error);
         res.status(500).send('Error generating CSV file');
+    }
+}
+
+// Function to serve attention check CSV results
+async function serveAttentionCheckCsv(res) {
+    try {
+        const attentionCollection = db.collection('attention_checks');
+        const results = await attentionCollection.find({}).sort({ timestamp: 1 }).toArray();
+        
+        if (results.length === 0) {
+            return res.status(404).send('No attention check data found');
+        }
+        
+        // Create CSV header
+        const header = "participant_id,attention_check_number,question_type,question_prompt,correct_answer,user_answer,is_correct,response_time,timestamp,session_id";
+        
+        const csvRows = results.map(result => {
+            return [
+                result.participant_id || '',
+                result.attention_check_number || '',
+                result.question_type || '',
+                result.question_prompt || '',
+                result.correct_answer || '',
+                result.user_answer || '',
+                result.is_correct || '',
+                result.response_time || '',
+                // Handle timestamp properly - check if it's a Date object or string
+                result.timestamp ? (typeof result.timestamp === 'object' && result.timestamp.toISOString ? result.timestamp.toISOString() : result.timestamp) : '',
+                result.session_id || ''
+            ].map(field => {
+                // Escape fields that contain commas or quotes
+                if (typeof field === 'string' && (field.includes(',') || field.includes('"'))) {
+                    return `"${field.replace(/"/g, '""')}"`;
+                }
+                return field;
+            }).join(',');
+        });
+        
+        const csvContent = [header, ...csvRows].join('\n');
+        
+        // Set headers for CSV download
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="attention_checks_${new Date().toISOString().split('T')[0]}.csv"`);
+        res.send(csvContent);
+        
+    } catch (error) {
+        console.error('Error generating attention check CSV:', error);
+        res.status(500).send('Error generating attention check CSV file');
     }
 }
 
@@ -436,6 +666,86 @@ app.post('/save', async (req, res) => {
     } catch (err) {
         console.error('Error saving data to database:', err);
         return res.status(500).send(`Error saving data: ${err.message}`);
+    }
+});
+
+// Endpoint to save attention check data
+app.post('/save-attention', async (req, res) => {
+    const { participantId, data } = req.body;
+    if (!data || !participantId) {
+        return res.status(400).send('No attention check data or participant ID received.');
+    }
+
+    try {
+        const attentionCollection = db.collection('attention_checks');
+        
+        // Add timestamp and participant ID to each record
+        const entries = data.map(item => ({
+            ...item,
+            participant_id: participantId,
+            saved_at: new Date()
+        }));
+
+        console.log(`Inserting ${entries.length} attention check entries for participant ${participantId}`);
+        console.log('Sample attention check entry:', entries[0]);
+
+        if (entries.length > 0) {
+            await attentionCollection.insertMany(entries);
+        }
+        
+        res.status(200).send(`Attention check data saved successfully. ${entries.length} entries processed.`);
+    } catch (err) {
+        console.error('Error saving attention check data to database:', err);
+        return res.status(500).send(`Error saving attention check data: ${err.message}`);
+    }
+});
+
+// Endpoint to download attention check data as CSV
+app.get('/download-attention/:participantId', async (req, res) => {
+    const { participantId } = req.params;
+    
+    try {
+        const attentionCollection = db.collection('attention_checks');
+        const results = await attentionCollection.find({ participant_id: participantId }).toArray();
+        
+        if (results.length === 0) {
+            return res.status(404).send('No attention check data found for this participant.');
+        }
+        
+        // Create CSV header
+        const header = "participant_id,attention_check_number,question_type,question_prompt,correct_answer,user_answer,is_correct,response_time,timestamp,session_id";
+        
+        const csvRows = results.map(result => {
+            return [
+                result.participant_id || '',
+                result.attention_check_number || '',
+                result.question_type || '',
+                result.question_prompt || '',
+                result.correct_answer || '',
+                result.user_answer || '',
+                result.is_correct || '',
+                result.response_time || '',
+                result.timestamp ? result.timestamp.toISOString() : '',
+                result.session_id || ''
+            ].map(field => {
+                // Escape fields that contain commas or quotes
+                if (typeof field === 'string' && (field.includes(',') || field.includes('"'))) {
+                    return `"${field.replace(/"/g, '""')}"`;
+                }
+                return field;
+            }).join(',');
+        });
+        
+        const csvContent = [header, ...csvRows].join('\n');
+        
+        // Set headers for CSV download
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="attention_checks_${participantId}_${new Date().toISOString().split('T')[0]}.csv"`);
+        res.send(csvContent);
+        
+    } catch (error) {
+        console.error('Error generating attention check CSV:', error);
+        res.status(500).send('Error generating attention check CSV file');
     }
 });
 

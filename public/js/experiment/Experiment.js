@@ -9,6 +9,7 @@ class RiskSurveyExperiment {
         this.trials = [];
         this.attentionChecks = [];
         this.csvData = [];
+        this.attentionCheckData = []; // Track attention check responses
         this.trialCounter = 1;
         this.currentTimer = null;
         this.experimentConfig = null;

@@ -73,6 +73,24 @@ Object.assign(RiskSurveyExperiment.prototype, {
         console.log(`Trial ${this.trialCounter - 1}: choice="${choiceValue}", confidence=${confidenceValue}, ev=${ev}, bar_choice_time=${bar_choice_time}s, confidence_time=${confidence_choice_time}s`);
     },
 
+    saveAttentionCheckData(question, userAnswer, isCorrect, responseTime) {
+        const attentionCheckRow = {
+            participant_id: this.subjectId || 'unknown',
+            attention_check_number: this.attentionCheckData.length + 1,
+            question_type: question.type,
+            question_prompt: question.prompt,
+            correct_answer: question.correct_answer,
+            user_answer: userAnswer,
+            is_correct: isCorrect,
+            response_time: responseTime,
+            timestamp: new Date().toISOString(),
+            session_id: this.sessionId
+        };
+        
+        this.attentionCheckData.push(attentionCheckRow);
+        console.log(`Attention Check ${this.attentionCheckData.length}: ${isCorrect ? 'CORRECT' : 'INCORRECT'} - "${userAnswer}"`);
+    },
+
     async finishExperiment() {
         // Validate data before attempting to save
         if (!this.csvData || this.csvData.length === 0) {
@@ -102,7 +120,8 @@ Object.assign(RiskSurveyExperiment.prototype, {
             console.log(`Attempting to save ${this.csvData.length} trials for subject ${this.subjectId}`);
             console.log('Sample data row:', this.csvData[0]);
 
-            const response = await fetch('/save', {
+            // Save main trial data
+            const trialResponse = await fetch('/save', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,31 +129,48 @@ Object.assign(RiskSurveyExperiment.prototype, {
                 body: JSON.stringify({ data: this.csvData.join('') }),
             });
 
-            const responseText = await response.text();
-            console.log('Server response:', responseText);
+            // Save attention check data
+            const attentionResponse = await fetch('/save-attention', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    participantId: this.subjectId,
+                    data: this.attentionCheckData 
+                }),
+            });
 
-            if (response.ok) {
-                document.body.innerHTML = `
-                    <div class="main-container">
-                        <div class="instructions">
-                            <h2>Thank You</h2>
-                            <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fafafa;">
-                                <p style="font-size: 18px; margin-bottom: 1rem;">You have successfully completed the risk survey task.</p>
-                                <p style="color: green; font-weight: bold;">Your responses have been successfully saved.</p>
-                                <div style="margin-top: 1rem; color: #666; font-size: 14px;">
-                                    <small>Subject ID: ${this.subjectId} | Trials completed: ${this.csvData.length}</small>
-                                </div>
-                            </div>
-                            <p>You may now close this window.</p>
-                        </div>
-                    </div>`;
+            console.log('Trial data response:', await trialResponse.text());
+            console.log('Attention check response:', await attentionResponse.text());
+
+            if (trialResponse.ok && attentionResponse.ok) {
+                this.showDownloadPage();
             } else {
-                throw new Error(`Server error: ${response.status} - ${responseText}`);
+                throw new Error(`Server error saving data`);
             }
         } catch (err) {
             console.error('Error saving data:', err);
             this.showDataError(`There was an error saving your data: ${err.message}`);
         }
+    },
+
+    showDownloadPage() {
+        document.body.innerHTML = `
+            <div class="main-container">
+                <div class="instructions">
+                    <h2>Thank You!</h2>
+                    <div style="border: 1px solid #e5e5e5; padding: 2rem; border-radius: 4px; margin: 2rem 0; background: #fafafa;">
+                        <p style="font-size: 18px; margin-bottom: 1rem;">You have successfully completed the risk survey task.</p>
+                        <p style="color: green; font-weight: bold; margin-bottom: 2rem;">Your responses have been successfully saved.</p>
+                        
+                        <div style="margin-top: 1rem; color: #666; font-size: 14px;">
+                            <small>Subject ID: ${this.subjectId} | Trials completed: ${this.csvData.length} | Attention checks: ${this.attentionCheckData.length}</small>
+                        </div>
+                    </div>
+                    <p>You may now close this window.</p>
+                </div>
+            </div>`;
     },
 
     showDataError(message) {

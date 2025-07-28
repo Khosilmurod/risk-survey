@@ -47,6 +47,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
 
     runAttentionCheck(question) {
          this.clearTimer();
+         this.attentionCheckStartTime = Date.now(); // Track start time for response time
          
          let stimulus;
          switch (question.type) {
@@ -62,7 +63,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
                                  </label>
                              `).join('')}
                          </div>
-                         <div class="attention-warning" id="attention-warning" style="color: red; font-weight: bold; margin-top: 10px; visibility: hidden;"></div>
                          <div class="navigation" style="margin-top: 20px;">
                              <button id="attention-next-btn" class="next-button" disabled>Next</button>
                          </div>
@@ -77,7 +77,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
                          <div class="attention-check-input">
                              <input type="text" id="attention-text-input" placeholder="Type your answer here..." style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
                          </div>
-                         <div class="attention-warning" id="attention-warning" style="color: red; font-weight: bold; margin-top: 10px; visibility: hidden;"></div>
                          <div class="navigation" style="margin-top: 20px;">
                              <button id="attention-next-btn" class="next-button" disabled>Next</button>
                          </div>
@@ -97,7 +96,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
                                  </label>
                              `).join('')}
                          </div>
-                         <div class="attention-warning" id="attention-warning" style="color: red; font-weight: bold; margin-top: 10px; visibility: hidden;"></div>
                          <div class="navigation" style="margin-top: 20px;">
                              <button id="attention-next-btn" class="next-button" disabled>Next</button>
                          </div>
@@ -112,21 +110,13 @@ Object.assign(RiskSurveyExperiment.prototype, {
 
     setupAttentionCheckEvents(question) {
         const nextBtn = document.getElementById('attention-next-btn');
-        const warning = document.getElementById('attention-warning');
 
         if (question.type === 'multi-choice') {
             const radios = document.querySelectorAll('input[name="attention-choice"]');
             
             radios.forEach(radio => {
                 radio.addEventListener('change', () => {
-                    if (radio.value === question.correct_answer) {
-                        nextBtn.disabled = false;
-                        warning.style.visibility = 'hidden';
-                    } else {
-                        nextBtn.disabled = true;
-                        warning.style.visibility = 'visible';
-                        warning.textContent = 'Are you paying attention? Please select the correct answer to continue.';
-                    }
+                    nextBtn.disabled = false; // Enable button when any option is selected
                 });
             });
             
@@ -134,16 +124,8 @@ Object.assign(RiskSurveyExperiment.prototype, {
             const textInput = document.getElementById('attention-text-input');
             
             textInput.addEventListener('input', () => {
-                const userInput = textInput.value.trim().toLowerCase();
-                const correctAnswer = question.correct_answer.toLowerCase();
-                
-                if (userInput === correctAnswer) {
-                    nextBtn.disabled = false;
-                    warning.style.visibility = 'hidden';
-                } else {
-                    nextBtn.disabled = true;
-                    warning.style.visibility = 'visible';
-                    warning.textContent = 'Are you paying attention? Please type the correct answer to continue.';
+                if (textInput.value.trim()) {
+                    nextBtn.disabled = false; // Enable button when any text is entered
                 }
             });
             
@@ -152,21 +134,43 @@ Object.assign(RiskSurveyExperiment.prototype, {
             
             radios.forEach(radio => {
                 radio.addEventListener('change', () => {
-                    const selectedLabel = radio.getAttribute('data-label');
-                    if (selectedLabel === question.correct_answer) {
-                        nextBtn.disabled = false;
-                        warning.style.visibility = 'hidden';
-                    } else {
-                        nextBtn.disabled = true;
-                        warning.style.visibility = 'visible';
-                        warning.textContent = 'Are you paying attention? Please select the correct answer to continue.';
-                    }
+                    nextBtn.disabled = false; // Enable button when any option is selected
                 });
             });
         }
 
         nextBtn.addEventListener('click', () => {
             if (!nextBtn.disabled) {
+                // Calculate response time
+                const responseTime = (Date.now() - this.attentionCheckStartTime) / 1000;
+                
+                // Get user answer based on question type
+                let userAnswer = '';
+                let isCorrect = false;
+                
+                if (question.type === 'multi-choice') {
+                    const selectedRadio = document.querySelector('input[name="attention-choice"]:checked');
+                    if (selectedRadio) {
+                        userAnswer = selectedRadio.value;
+                        isCorrect = userAnswer === question.correct_answer;
+                    }
+                } else if (question.type === 'text') {
+                    const textInput = document.getElementById('attention-text-input');
+                    if (textInput) {
+                        userAnswer = textInput.value.trim();
+                        isCorrect = userAnswer.toLowerCase() === question.correct_answer.toLowerCase();
+                    }
+                } else if (question.type === 'likert') {
+                    const selectedRadio = document.querySelector('input[name="attention-likert"]:checked');
+                    if (selectedRadio) {
+                        userAnswer = selectedRadio.getAttribute('data-label');
+                        isCorrect = userAnswer === question.correct_answer;
+                    }
+                }
+                
+                // Save attention check data
+                this.saveAttentionCheckData(question, userAnswer, isCorrect, responseTime);
+                
                 this.currentTrialIndex++;
                 this.runNextTrial();
             }
