@@ -3,7 +3,7 @@
         "practiceTrials": 8,
         "mainTrials": 120,
         "attentionChecks": 8,
-        "trialDuration": 8000,
+        "trialDuration": 12000,
         "barSizes": {
             "large": {
                 "width": 150,

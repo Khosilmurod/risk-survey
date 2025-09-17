@@ -148,12 +148,12 @@ Object.assign(RiskSurveyExperiment.prototype, {
                     <div style="margin: 2rem 0; padding: 2rem; border-left: 4px solid #ffeaa7;">
                         <h2 style="margin-top: 0; color: var(--text-primary); font-size: 1.6rem; font-weight: 400;">⏱️ Important Timing Info</h2>
                         <p style="margin-bottom: 0; color: var(--text-primary); line-height: 1.7; font-size: 1.1rem; font-weight: 300;">
-                            You have <strong>8 seconds</strong> to make each choice. After selecting, rate your confidence (0-100) and click Next.
+                            You have <strong>12 seconds</strong> to make each choice. After selecting, rate your confidence (0-100) and click Next.
                         </p>
                     </div>
                     
                     <div style="text-align: center; margin-top: 3rem;">
-                        <button class="next-button" onclick="experiment.startPractice()">Start Practice</button>
+                        <button class="next-button" onclick="experiment.startComprehensionCheck()">Continue</button>
                         </div>
                     </div>
                 </div>
@@ -173,7 +173,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
                         <h3 style="margin-top: 0; color: var(--text-primary); font-size: 1.4rem;">📊 What's Next</h3>
                         <ul style="margin-bottom: 0; color: var(--text-primary); line-height: 1.6; text-align: left; font-size: 1.1rem;">
                             <li style="margin-bottom: 0.8rem;"><strong>${this.config?.mainTrials || 120} decision trials</strong> with varying risk levels</li>
-                            <li style="margin-bottom: 0.8rem;"><strong>8-second timer</strong> for each choice</li>
+                            <li style="margin-bottom: 0.8rem;"><strong>12-second timer</strong> for each choice</li>
                         </ul>
                     </div>
                     <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 3rem; font-weight: 300;">
