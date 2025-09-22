@@ -177,12 +177,20 @@ Object.assign(RiskSurveyExperiment.prototype, {
         });
     },
 
+    // Generate random initial value for confidence slider
+    generateRandomConfidenceValue() {
+        return Math.floor(Math.random() * 101); // 0-100
+    },
+
     createTrialHTML(trial, totalTrials) {
         // Get styles directly from config
         const riskSizeClass = this.getSizeClass(trial.size_condition, 'risk');
         const safeSizeClass = this.getSizeClass(trial.size_condition, 'safe');
         const riskStyles = this.getBarStyles(riskSizeClass);
         const safeStyles = this.getBarStyles(safeSizeClass);
+
+        // Generate random initial confidence value
+        const randomConfidenceValue = this.generateRandomConfidenceValue();
         
         const riskBarHTML = `
             <div class="option">
@@ -225,8 +233,8 @@ Object.assign(RiskSurveyExperiment.prototype, {
             </div>
             <div class="confidence-container">
                 <div class="confidence-label" id="confidence-label">On a scale of 0–100, how confident are you in your choice?</div>
-                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="50" oninput="experiment.updateConfidence(this.value)" disabled>
-                <div class="confidence-value" id="confidence-value">50</div>
+                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="${randomConfidenceValue}" oninput="experiment.updateConfidence(this.value)" disabled>
+                <div class="confidence-value" id="confidence-value">${randomConfidenceValue}</div>
             </div>
             <div class="navigation">
                 <button class="next-button" id="next-button" onclick="experiment.advanceTrial()" disabled>Next</button>
@@ -297,6 +305,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
         const confidenceLabel = document.getElementById('confidence-label');
         if (confidenceSlider) {
             confidenceSlider.disabled = false;
+            this.currentConfidence = parseInt(confidenceSlider.value);
         }
         if (confidenceLabel) {
             confidenceLabel.textContent = 'On a scale of 0–100, how confident are you in your choice?';
