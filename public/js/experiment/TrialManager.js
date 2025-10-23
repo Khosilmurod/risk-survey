@@ -19,7 +19,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
             const shuffledTrials = this.shuffle([...trialsData]);
             
             // Select trials for main experiment (ensuring no duplicates)
-            const mainTrialCount = Math.min(this.experimentConfig.mainTrials, shuffledTrials.length);
+            const mainTrialCount = Math.min(this.experimentConfig.phase1Trials || this.experimentConfig.mainTrials, shuffledTrials.length);
             const selectedMainTrials = shuffledTrials.slice(0, mainTrialCount);
             
             // Create fixed set of 8 practice trials with good variety
@@ -91,7 +91,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
         }
     },
 
-    async loadTrialsFromCSV(filename = 'full_trials.csv') {
+    async loadTrialsFromCSV(filename = 'indifference_trials.csv') {
         const response = await fetch(filename);
         if (!response.ok) {
             throw new Error(`Failed to load trials CSV: ${response.status}`);

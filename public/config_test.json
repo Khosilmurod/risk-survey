@@ -1,13 +1,11 @@
 {
     "experimentConfig": {
-        "experimentMode": "full",
-        "practiceTrials": 8,
-        "mainTrials": 120,
-        "phase1Trials": 120,        
-        "phase2Trials": 63, 
-        "attentionChecks": 8,
+        "experimentMode": "test",
+        "practiceTrials": 2,
+        "phase1Trials": 6,
+        "phase2Trials": 3,
+        "attentionChecks": 1,
         "trialDuration": 12000,
-        "enablePhase2": true, 
         "barSizes": {
             "large": {
                 "width": 150,

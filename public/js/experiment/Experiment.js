@@ -37,7 +37,23 @@ class RiskSurveyExperiment {
 
     async init() {
         try {
-            const response = await fetch('config.json');
+            // Check URL for mode parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode') || 'full'; // 'full', 'test', or 'indifference'
+            
+            let configFile;
+            switch(mode) {
+                case 'test':
+                    configFile = 'config_test.json';
+                    break;
+                case 'indifference':
+                    configFile = 'config_indifference.json';
+                    break;
+                default:
+                    configFile = 'config.json';
+            }
+            console.log(`Loading config: ${configFile} (mode: ${mode})`);
+            const response = await fetch(configFile);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
