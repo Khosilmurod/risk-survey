@@ -92,14 +92,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
     },
 
     async finishExperiment() {
-        // Check if this is end of Phase 1
-        if (this.currentPhase === 1) {
-            console.log('Phase 1 complete - transitioning to Phase 2');
-            await this.transitionToPhase2();
-            return; // Don't save yet!
-        }
-        
-        // Phase 2 complete - now save all data
+        // Validate data before attempting to save
         if (!this.csvData || this.csvData.length === 0) {
             console.error('No data to save!');
             this.showDataError('No trial data was collected. Please contact the researcher.');
@@ -201,26 +194,21 @@ Object.assign(RiskSurveyExperiment.prototype, {
                 </div>
             </div>`;
     },
-
+    
     async transitionToPhase2() {
         // Initialize alpha estimator
         this.alphaEstimator = new AlphaEstimator();
         
-        // Skip header row and parse Phase 1 data
-        const dataRows = this.csvData.slice(1); // Skip header
-        
-        dataRows.forEach(rowString => {
-            const values = this.parseCSVRow(rowString.trim());
-            
-            // Map to trial object using correct indices
+        // Parse all Phase 1 trial data
+        this.csvData.forEach(rowString => {
+            const values = rowString.split(',');
             const trial = {
-                choice: values[3],                          // choice
-                confidence: parseFloat(values[4]) || NaN,   // confidence
-                risk_probability: parseInt(values[5]),      // risk_probability
-                risk_reward: parseInt(values[6]),           // risk_reward
-                safe_reward: parseInt(values[8])            // safe_reward
+                choice: values[3],
+                confidence: parseFloat(values[4]),
+                risk_probability: parseInt(values[5]),
+                risk_reward: parseInt(values[6]),
+                safe_reward: parseInt(values[8])
             };
-            
             this.alphaEstimator.addChoice(trial);
         });
         
@@ -269,7 +257,8 @@ Object.assign(RiskSurveyExperiment.prototype, {
             </div>
         `;
     },
-
+    
+    // Get risk profile description
     getRiskProfileDescription(alpha) {
         if (alpha < 0.5) {
             return "You tend to be quite risk-averse in your choices.";
@@ -283,17 +272,22 @@ Object.assign(RiskSurveyExperiment.prototype, {
             return "You tend to be risk-seeking in your choices.";
         }
     },
-
+    
+    // Begin Phase 2 with personalized trials
     async beginPhase2() {
+        // Generate Phase 2 trials using estimated alpha
         this.phase2Generator = new Phase2Generator(this.estimatedAlpha);
         
-        // Always generate full set, then slice to desired count
-        const fullPhase2Trials = this.phase2Generator.generatePhase2TrialsSubset();
+        // Generate subset of trials for Phase 2
+        const phase2TrialsData = this.experimentConfig.phase2Trials === 126 
+            ? this.phase2Generator.generatePhase2Trials()
+            : this.phase2Generator.generatePhase2TrialsSubset();
+        
+        // Convert to experiment format
         const phase2Trials = this.phase2Generator.getTrialsForExperiment();
         
-        // Shuffle and take only the number specified in config
-        const desiredCount = this.experimentConfig.phase2Trials || 63;
-        this.trials = this.shuffle(phase2Trials).slice(0, desiredCount);
+        // Randomize trial order
+        this.trials = this.shuffle(phase2Trials);
         
         // Add random risk_on_left
         this.trials = this.trials.map(trial => ({
@@ -302,50 +296,15 @@ Object.assign(RiskSurveyExperiment.prototype, {
             is_practice: false
         }));
         
+        // Reset trial state for Phase 2
         this.currentPhase = 2;
         this.currentTrialIndex = 0;
         this.currentTimeline = this.trials;
         
         console.log(`=== STARTING PHASE 2 ===`);
-        console.log(`Generated ${this.trials.length} personalized trials (from config: ${desiredCount})`);
+        console.log(`Generated ${this.trials.length} personalized trials`);
         
+        // Start Phase 2 trials
         this.runNextTrial();
-    },
-
-    // Helper method for CSV parsing
-    parseCSVRow(row) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < row.length; i++) {
-            const char = row[i];
-            const nextChar = row[i + 1];
-            
-            if (char === '"') {
-                if (inQuotes && nextChar === '"') {
-                    current += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-            } else if (char === ',' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-        result.push(current);
-        return result;
-    },
-
-    shuffle(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
     }
 }); 
