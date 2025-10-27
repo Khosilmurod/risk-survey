@@ -8,12 +8,9 @@ Object.assign(RiskSurveyExperiment.prototype, {
     
     async generateTrials() {
         try {
-            // Determine which trial file to load based on experiment mode
-            const trialFile = this.experimentConfig.phase1TrialFile || 'full_trials.csv';
-            
             // Load trials from CSV file
-            const trialsData = await this.loadTrialsFromCSV(trialFile);
-            console.log(`Loaded ${trialsData.length} trials from ${trialFile}`);
+            const trialsData = await this.loadTrialsFromCSV();
+            console.log(`Loaded ${trialsData.length} trials from CSV`);
             
             // Simple random selection with no duplicates within the experiment
             const shuffledTrials = this.shuffle([...trialsData]);
@@ -91,8 +88,8 @@ Object.assign(RiskSurveyExperiment.prototype, {
         }
     },
 
-    async loadTrialsFromCSV(filename = 'full_trials.csv') {
-        const response = await fetch(filename);
+    async loadTrialsFromCSV() {
+        const response = await fetch('full_trials.csv');
         if (!response.ok) {
             throw new Error(`Failed to load trials CSV: ${response.status}`);
         }

@@ -16,12 +16,6 @@ class RiskSurveyExperiment {
         this.attentionCheckQuestions = null;
         this.subjectId = null;
 
-        // Two-phase experiment support
-        this.alphaEstimator = null;
-        this.phase2Generator = null;
-        this.currentPhase = 1; 
-        this.estimatedAlpha = null;
-
         // Trial state
         this.currentChoice = null;
         this.currentConfidence = null;

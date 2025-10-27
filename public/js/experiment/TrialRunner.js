@@ -353,14 +353,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
         }
         
         this.currentTrialIndex++;
-        
-        // Check if we've completed Phase 1 and should transition to Phase 2
-        if (this.currentPhase === 1 && 
-            this.currentTrialIndex >= this.currentTimeline.length &&
-            this.experimentConfig.enablePhase2) {
-            this.transitionToPhase2();
-        } else {
-            this.runNextTrial();
-        }
+        this.runNextTrial();
     }
 }); 
