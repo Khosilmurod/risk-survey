@@ -231,12 +231,8 @@ Object.assign(RiskSurveyExperiment.prototype, {
                 <div class="option-container">${leftOption}</div>
                 <div class="option-container">${rightOption}</div>
             </div>
-            <div class="confidence-container">
-                <div class="confidence-label" id="confidence-label">On a scale of 0–100, how confident are you in your choice?</div>
-                <input type="range" class="confidence-slider" id="confidence-slider" min="0" max="100" value="${randomConfidenceValue}" oninput="experiment.updateConfidence(this.value)" disabled>
-                <div class="confidence-value" id="confidence-value">${randomConfidenceValue}</div>
-            </div>
-            <div class="navigation">
+            
+    <div class="navigation">
                 <button class="next-button" id="next-button" onclick="experiment.advanceTrial()" disabled>Next</button>
             </div>`;
     },
@@ -253,11 +249,11 @@ Object.assign(RiskSurveyExperiment.prototype, {
 
     resetTrialState() {
         this.currentChoice = null;
-        this.currentConfidence = null;
+       
         this.trialStartTime = Date.now();
         this.pageEntryTime = (Date.now() - this.trialStartTime) / 1000; // Set immediately when page loads
         this.barChoiceTime = null;
-        this.sliderInteracted = false;
+     
     },
 
     startTrialTimer() {
@@ -300,38 +296,11 @@ Object.assign(RiskSurveyExperiment.prototype, {
             selectedElement.classList.add('selected-bar');
         }
         
-        // Enable the confidence slider after bar selection
-        const confidenceSlider = document.getElementById('confidence-slider');
-        const confidenceLabel = document.getElementById('confidence-label');
-        if (confidenceSlider) {
-            confidenceSlider.disabled = false;
-            this.currentConfidence = parseInt(confidenceSlider.value);
-        }
-        if (confidenceLabel) {
-            confidenceLabel.textContent = 'On a scale of 0–100, how confident are you in your choice?';
-        }
-        
-        this.checkTrialComplete();
-    },
-
-    updateConfidence(value) {
-        // Only allow updating if a choice has been made
-        if (this.currentChoice === null) {
-            return;
-        }
-        
-        this.currentConfidence = parseInt(value);
-        this.sliderInteracted = true;
-        const confidenceValueElement = document.getElementById('confidence-value');
-        if (confidenceValueElement) {
-            confidenceValueElement.textContent = value;
-        }
-        this.checkTrialComplete();
     },
 
     checkTrialComplete() {
         const nextButton = document.getElementById('next-button');
-        if (nextButton && this.currentChoice !== null && this.sliderInteracted) {
+        if (nextButton && this.currentChoice !== null) {
             nextButton.disabled = false;
         } else if (nextButton) {
             nextButton.disabled = true;
