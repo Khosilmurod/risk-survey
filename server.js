@@ -487,7 +487,6 @@ async function serveCsvResults(res) {
                 result.trial_number || '',
                 result.bar_size_condition || '',
                 result.choice || '',
-                result.confidence || '',
                 result.risk_probability || '',
                 result.risk_reward || '',
                 result.safe_probability || '',
@@ -496,7 +495,6 @@ async function serveCsvResults(res) {
                 result.safe_position || '',
                 result.ev || '',
                 result.bar_choice_time || '',
-                result.confidence_choice_time || '',
                 result.trial_id || '',
                 result.timestamp ? result.timestamp.toISOString() : ''
             ].map(field => {
