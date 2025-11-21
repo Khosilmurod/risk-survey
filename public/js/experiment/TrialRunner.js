@@ -178,9 +178,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
     },
 
     // Generate random initial value for confidence slider
-    generateRandomConfidenceValue() {
-        return Math.floor(Math.random() * 101); // 0-100
-    },
+
 
     createTrialHTML(trial, totalTrials) {
         // Get styles directly from config
@@ -190,7 +188,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
         const safeStyles = this.getBarStyles(safeSizeClass);
 
         // Generate random initial confidence value
-        const randomConfidenceValue = this.generateRandomConfidenceValue();
         
         const riskBarHTML = `
             <div class="option">
