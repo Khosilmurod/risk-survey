@@ -137,7 +137,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
                         </h2>
                         <ol style="line-height: 1.8; font-size: 1.1rem; font-weight: 300; margin-left: 2rem;">
                             <li style="margin-bottom: 1rem;"><strong>Choose</strong> your preferred option by clicking on it</li>
-                            <li style="margin-bottom: 1rem;"><strong>Rate your confidence</strong> (0-100) in your choice</li>
                             <li style="margin-bottom: 1rem;"><strong>Click Next</strong> to continue to the next choice</li>
                         </ol>
                         <p style="font-size: 1.1rem; color: var(--text-secondary); margin-top: 2rem; font-style: italic; font-weight: 300;">
@@ -148,7 +147,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
                     <div style="margin: 2rem 0; padding: 2rem; border-left: 4px solid #ffeaa7;">
                         <h2 style="margin-top: 0; color: var(--text-primary); font-size: 1.6rem; font-weight: 400;">⏱️ Important Timing Info</h2>
                         <p style="margin-bottom: 0; color: var(--text-primary); line-height: 1.7; font-size: 1.1rem; font-weight: 300;">
-                            You have <strong>12 seconds</strong> to make each choice. After selecting, rate your confidence (0-100) and click Next.
+                            You have <strong>6 seconds</strong> to make each choice. After selecting, click Next.
                         </p>
                     </div>
                     
@@ -173,7 +172,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
                         <h3 style="margin-top: 0; color: var(--text-primary); font-size: 1.4rem;">📊 What's Next</h3>
                         <ul style="margin-bottom: 0; color: var(--text-primary); line-height: 1.6; text-align: left; font-size: 1.1rem;">
                             <li style="margin-bottom: 0.8rem;"><strong>${this.config?.mainTrials || 120} decision trials</strong> with varying risk levels</li>
-                            <li style="margin-bottom: 0.8rem;"><strong>12-second timer</strong> for each choice</li>
+                            <strong>6-second timer</strong> for each choice
                         </ul>
                     </div>
                     <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 3rem; font-weight: 300;">
