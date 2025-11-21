@@ -1,0 +1,49 @@
+[35mREADME.md[m[36m:[m[32m35[m[36m:[m- `choice` (risk/safe/timeout), `[1;31mconfidence[m` (0-100 or NaN)
+[35mREADME.md[m[36m:[m[32m38[m[36m:[m- `bar_choice_time`, `[1;31mconfidence[m_choice_time`, `trial_id`
+[35mpublic/css/styles.css[m[36m:[m[32m176[m[36m:[m.[1;31mconfidence[m-container {
+[35mpublic/css/styles.css[m[36m:[m[32m181[m[36m:[m.[1;31mconfidence[m-label {
+[35mpublic/css/styles.css[m[36m:[m[32m188[m[36m:[m.[1;31mconfidence[m-slider {
+[35mpublic/css/styles.css[m[36m:[m[32m198[m[36m:[m.[1;31mconfidence[m-slider::-webkit-slider-thumb {
+[35mpublic/css/styles.css[m[36m:[m[32m209[m[36m:[m.[1;31mconfidence[m-slider::-moz-range-thumb {
+[35mpublic/css/styles.css[m[36m:[m[32m218[m[36m:[m/* Disabled [1;31mconfidence[m slider styles */
+[35mpublic/css/styles.css[m[36m:[m[32m219[m[36m:[m.[1;31mconfidence[m-slider:disabled {
+[35mpublic/css/styles.css[m[36m:[m[32m225[m[36m:[m.[1;31mconfidence[m-slider:disabled::-webkit-slider-thumb {
+[35mpublic/css/styles.css[m[36m:[m[32m230[m[36m:[m.[1;31mconfidence[m-slider:disabled::-moz-range-thumb {
+[35mpublic/css/styles.css[m[36m:[m[32m235[m[36m:[m.[1;31mconfidence[m-value {
+[35mpublic/css/styles.css[m[36m:[m[32m365[m[36m:[m    .[1;31mconfidence[m-slider {
+[35mpublic/css/styles.css[m[36m:[m[32m369[m[36m:[m    .[1;31mconfidence[m-label {
+[35mpublic/css/styles.css[m[36m:[m[32m411[m[36m:[m    .[1;31mconfidence[m-slider {
+[35mpublic/css/styles.css[m[36m:[m[32m415[m[36m:[m    .[1;31mconfidence[m-label {
+[35mpublic/js/experiment/DataCollector.js[m[36m:[m[32m18[m[36m:[m        // Set [1;31mconfidence[m to NaN if slider wasn't interacted with
+[35mpublic/js/experiment/DataCollector.js[m[36m:[m[32m19[m[36m:[m        let [1;31mconfidence[mValue = this.sliderInteracted && this.currentConfidence !== null ? this.currentConfidence : NaN;
+[35mpublic/js/experiment/DataCollector.js[m[36m:[m[32m23[m[36m:[m        const [1;31mconfidence[m_choice_time = (this.barChoiceTime && submitTime) ? (submitTime - this.barChoiceTime) : NaN; // Time from bar choice to [1;31mconfidence[m
+[35mpublic/js/experiment/DataCollector.js[m[36m:[m[32m47[m[36m:[m            [1;31mconfidence[mValue,                       // [1;31mconfidence[m (0-100 or NaN)
+[35mpublic/js/experiment/DataCollector.js[m[36m:[m[32m56[m[36m:[m            [1;31mconfidence[m_choice_time,                // [1;31mconfidence[m_choice_time (seconds from bar choice to [1;31mconfidence[m)
+[35mpublic/js/experiment/DataCollector.js[m[36m:[m[32m73[m[36m:[m        console.log(`Trial ${this.trialCounter - 1}: choice="${choiceValue}", [1;31mconfidence[m=${[1;31mconfidence[mValue}, ev=${ev}, bar_choice_time=${bar_choice_time}s, [1;31mconfidence[m_time=${[1;31mconfidence[m_choice_time}s`);
+[35mserver.js[m[36m:[m[32m482[m[36m:[m        const header = "participant_id,trial_number,bar_size_condition,choice,[1;31mconfidence[m,risk_probability,risk_reward,safe_probability,safe_reward,risk_position,safe_position,ev,bar_choice_time,[1;31mconfidence[m_choice_time,trial_id,timestamp";
+[35mserver.js[m[36m:[m[32m490[m[36m:[m                result.[1;31mconfidence[m || '',
+[35mserver.js[m[36m:[m[32m499[m[36m:[m                result.[1;31mconfidence[m_choice_time || '',
+[35mserver.js[m[36m:[m[32m617[m[36m:[m        const header = "participant_id,trial_number,bar_size_condition,choice,[1;31mconfidence[m,risk_probability,risk_reward,safe_probability,safe_reward,risk_position,safe_position,ev,bar_choice_time,[1;31mconfidence[m_choice_time,trial_id";
+[35mserver.js[m[36m:[m[32m635[m[36m:[m                    if (['trial_number', '[1;31mconfidence[m', 'risk_probability', 'risk_reward', 'safe_reward', 'safe_probability', 'bar_choice_time', '[1;31mconfidence[m_choice_time', 'trial_id'].includes(key)) {
+[35mstatic/experiment-old-version[m[36m:[m[32m316[m[36m:[m                            <li style="margin-bottom: 0.5rem;"><strong>Rate your [1;31mconfidence[m</strong> (0-100) in your choice</li>
+[35mstatic/experiment-old-version[m[36m:[m[32m327[m[36m:[m                            You have <strong>8 seconds</strong> to make each choice. After selecting, rate your [1;31mconfidence[m (0-100) and click Next.
+[35mstatic/experiment-old-version[m[36m:[m[32m822[m[36m:[m            <div class="[1;31mconfidence[m-container">
+[35mstatic/experiment-old-version[m[36m:[m[32m823[m[36m:[m                <div class="[1;31mconfidence[m-label" id="[1;31mconfidence[m-label">On a scale of 0–100, how confident are you in your choice?</div>
+[35mstatic/experiment-old-version[m[36m:[m[32m824[m[36m:[m                <input type="range" class="[1;31mconfidence[m-slider" id="[1;31mconfidence[m-slider" min="0" max="100" value="50" oninput="experiment.updateConfidence(this.value)" disabled>
+[35mstatic/experiment-old-version[m[36m:[m[32m825[m[36m:[m                <div class="[1;31mconfidence[m-value" id="[1;31mconfidence[m-value">50</div>
+[35mstatic/experiment-old-version[m[36m:[m[32m891[m[36m:[m        // Enable the [1;31mconfidence[m slider after bar selection
+[35mstatic/experiment-old-version[m[36m:[m[32m892[m[36m:[m        const [1;31mconfidence[mSlider = document.getElementById('[1;31mconfidence[m-slider');
+[35mstatic/experiment-old-version[m[36m:[m[32m893[m[36m:[m        const [1;31mconfidence[mLabel = document.getElementById('[1;31mconfidence[m-label');
+[35mstatic/experiment-old-version[m[36m:[m[32m894[m[36m:[m        if ([1;31mconfidence[mSlider) {
+[35mstatic/experiment-old-version[m[36m:[m[32m895[m[36m:[m            [1;31mconfidence[mSlider.disabled = false;
+[35mstatic/experiment-old-version[m[36m:[m[32m897[m[36m:[m        if ([1;31mconfidence[mLabel) {
+[35mstatic/experiment-old-version[m[36m:[m[32m898[m[36m:[m            [1;31mconfidence[mLabel.textContent = 'On a scale of 0–100, how confident are you in your choice?';
+[35mstatic/experiment-old-version[m[36m:[m[32m912[m[36m:[m        const [1;31mconfidence[mValueElement = document.getElementById('[1;31mconfidence[m-value');
+[35mstatic/experiment-old-version[m[36m:[m[32m913[m[36m:[m        if ([1;31mconfidence[mValueElement) {
+[35mstatic/experiment-old-version[m[36m:[m[32m914[m[36m:[m            [1;31mconfidence[mValueElement.textContent = value;
+[35mstatic/experiment-old-version[m[36m:[m[32m959[m[36m:[m        // Set [1;31mconfidence[m to NaN if slider wasn't interacted with
+[35mstatic/experiment-old-version[m[36m:[m[32m960[m[36m:[m        let [1;31mconfidence[mValue = this.sliderInteracted && this.currentConfidence !== null ? this.currentConfidence : NaN;
+[35mstatic/experiment-old-version[m[36m:[m[32m964[m[36m:[m        const [1;31mconfidence[m_choice_time = (this.barChoiceTime && submitTime) ? (submitTime - this.barChoiceTime) : NaN; // Time from bar choice to [1;31mconfidence[m
+[35mstatic/experiment-old-version[m[36m:[m[32m988[m[36m:[m            [1;31mconfidence[mValue,                       // [1;31mconfidence[m (0-100 or NaN)
+[35mstatic/experiment-old-version[m[36m:[m[32m997[m[36m:[m            [1;31mconfidence[m_choice_time,                // [1;31mconfidence[m_choice_time (seconds from bar choice to [1;31mconfidence[m)
+[35mstatic/experiment-old-version[m[36m:[m[32m1014[m[36m:[m        console.log(`Trial ${this.trialCounter - 1}: choice="${choiceValue}", [1;31mconfidence[m=${[1;31mconfidence[mValue}, ev=${ev}, bar_choice_time=${bar_choice_time}s, [1;31mconfidence[m_time=${[1;31mconfidence[m_choice_time}s`);
