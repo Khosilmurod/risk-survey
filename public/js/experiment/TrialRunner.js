@@ -177,7 +177,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
         });
     },
 
-    // Generate random initial value for confidence slider
 
 
     createTrialHTML(trial, totalTrials) {
@@ -187,7 +186,6 @@ Object.assign(RiskSurveyExperiment.prototype, {
         const riskStyles = this.getBarStyles(riskSizeClass);
         const safeStyles = this.getBarStyles(safeSizeClass);
 
-        // Generate random initial confidence value
         
         const riskBarHTML = `
             <div class="option">
@@ -222,7 +220,7 @@ Object.assign(RiskSurveyExperiment.prototype, {
         return `
             <div class="trial-header">
                 <div id="trial-counter">${trialCounterText}</div>
-                <div id="trial-timer">${!this.isPractice ? 'Time left: 8s' : ''}</div>
+                <div id="trial-timer">${!this.isPractice ? 'Time left: 6s' : ''}</div>
             </div>
             <div class="bars-area">
                 <div class="option-container">${leftOption}</div>
